@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour
     // Player movement and camera values
 
     public bool sprintMode = false;
-    public bool sprintToggleOption = false;
 
     [Header("Movement Settings")]
     public float speed = 10.0f;
@@ -27,6 +26,7 @@ public class PlayerController : MonoBehaviour
     public float Xsensitivity = 2.0f;
     public float Ysensitivity = 2.0f;
     public float camRotationLimit = 90f;
+    public bool sprintToggleOption = false;
 
     // Start is called before the first frame update
     void Start()
@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
         float verticalMove = Input.GetAxisRaw("Vertical");
         float horizontalMove = Input.GetAxisRaw("Horizontal");
 
-        if(!sprintToggleOption)
+        if (!sprintToggleOption)
         {
             if (Input.GetKey(KeyCode.LeftShift))
                 sprintMode = true;
@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
                 sprintMode = false;
         }
 
-        if(sprintToggleOption)
+        if (sprintToggleOption)
         {
             if (Input.GetKey(KeyCode.LeftShift) && verticalMove > 0)
                 sprintMode = true;
@@ -73,26 +73,28 @@ public class PlayerController : MonoBehaviour
                 sprintMode = false;
         }
 
-        if(Input.GetKey(KeyCode.LeftShift) && !sprintToggleOption)
-            sprintMode = true;
-
-        if (Input.GetKey(KeyCode.LeftControl))
-            sprintToggleOption = true;
-
-        // change this so you can use same button to leave sprintToggleOption
-        if (Input.GetKey(KeyCode.LeftControl) && sprintToggleOption)
-            sprintToggleOption = false;
-
-        if(!sprintMode)
+        if (!sprintMode)
             temp.x = verticalMove * speed;
 
-        if(sprintMode)
+        if (sprintMode)
             temp.x = verticalMove * speed * sprintMultiplier;
 
         temp.z = horizontalMove * speed;
 
+        // Unable to make platforming at the moment. I think standing on top of a regular cube blocks the raycast. Could be something to do with either the code or the object
         if (Input.GetKeyDown(KeyCode.Space) && Physics.Raycast(transform.position, -transform.up, groundDetectDistance))
             temp.y = jumpHeight;
+
+        // testing some crouching stuff. So far only changes the camera. Trying to make it change the player model but can't figure out how to change scale for now.
+        // camera values change when messing with scale stuff
+
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+            playerCam.transform.position += -Vector3.up * 1.0f;
+
+        if (Input.GetKeyUp(KeyCode.LeftControl))
+            playerCam.transform.position += Vector3.up * 1.0f;
+
+        // end of testing area
 
         myRB.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
     }
