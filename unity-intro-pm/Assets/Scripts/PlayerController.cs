@@ -17,9 +17,9 @@ public class PlayerController : MonoBehaviour
 
     [Header("Movement Settings")]
     public float speed = 10.0f;
-    public float sprintMultiplier = 2.5f;
+    public float sprintMultiplier = 3.0f;
     public float jumpHeight = 5.0f;
-    public float groundDetectDistance = 1.0f;
+    public float groundDetectDistance = 2.0f;
 
     [Header("User Settings")]
     public float mouseSensitivity = 2.0f;
