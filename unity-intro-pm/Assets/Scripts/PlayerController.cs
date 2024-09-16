@@ -11,13 +11,15 @@ public class PlayerController : MonoBehaviour
 
     Vector2 camRotation;
 
-    // Player movement and camera values
+    //public Transform.weaponSlot;
+
+    // Player and camera values
 
     public bool sprintMode = false;
 
     [Header("Movement Settings")]
     public float speed = 10.0f;
-    public float sprintMultiplier = 3.0f;
+    public float sprintMultiplier = 1.5f;
     public float jumpHeight = 5.0f;
     public float groundDetectDistance = 2.0f;
 
@@ -27,6 +29,15 @@ public class PlayerController : MonoBehaviour
     public float Ysensitivity = 2.0f;
     public float camRotationLimit = 90f;
     public bool sprintToggleOption = false;
+
+    [Header("Player Stats")]
+    public float playerMaxHealth = 100.0f;
+    public float playerHealth = 100.0f;
+    public float pickupHealth = 25.0f; // this will serve as number for big health pick ups. most health regen will be done on execution of enemies
+    public bool playerArmor = true;  // Armor will break on first hit, blocking all damage, and regen as you parry
+
+    [Header("Weapon Stats")]
+    public bool canSwing = true;
 
     // Start is called before the first frame update
     void Start()
@@ -97,5 +108,38 @@ public class PlayerController : MonoBehaviour
         // end of testing area
 
         myRB.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if ((playerHealth < playerMaxHealth) && other.gameObject.tag == "healthPickup")
+        {
+            playerHealth += pickupHealth;
+
+            if (playerHealth > playerMaxHealth)
+                playerHealth = playerMaxHealth;
+
+            Destroy(other.gameObject);
+        }
+
+        //if (other.gameObject.tag == "weapon")
+            //other.gameObject.transform.SetParent(weaponSlot);
+    }
+
+    private void cooldown(bool condition, float timeLimit)
+    {
+        float timer = 0.0f;
+
+        if (timer < timeLimit)
+            timer += Time.deltaTime;
+
+        else
+            condition = true;
+    }
+
+    IEnumerator cooldown(float time)
+    {
+        yield return new WaitForSeconds(time);
+        canSwing = true;
     }
 }
