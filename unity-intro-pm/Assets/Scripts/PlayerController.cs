@@ -11,11 +11,13 @@ public class PlayerController : MonoBehaviour
 
     Vector2 camRotation;
 
-    //public Transform.weaponSlot;
+    public Transform weaponSlotGun;
+    public Transform weaponSlotSword;
 
     // Player and camera values
 
     public bool sprintMode = false;
+    public bool isGrounded = true;
 
     [Header("Movement Settings")]
     public float speed = 10.0f;
@@ -33,11 +35,16 @@ public class PlayerController : MonoBehaviour
     [Header("Player Stats")]
     public float playerMaxHealth = 100.0f;
     public float playerHealth = 100.0f;
-    public float pickupHealth = 25.0f; // this will serve as number for big health pick ups. most health regen will be done on execution of enemies
-    public bool playerArmor = true;  // Armor will break on first hit, blocking all damage, and regen as you parry
+    public float pickupHealth = 25.0f; 
+    public bool playerArmor = true;
 
-    [Header("Weapon Stats")]
-    public bool canSwing = true;
+    [Header("Gun Weapon Stats")]
+    public int weaponID = -1;
+    public float fireRate = 0.0f;
+    public float maxAmmo = 0.0f;
+    public float currentAmmo = 0.0f;
+    public float pickupAmmo = 0.0f;
+    public bool canFire = true;
 
     // Start is called before the first frame update
     void Start()
@@ -60,6 +67,13 @@ public class PlayerController : MonoBehaviour
 
         playerCam.transform.localRotation = Quaternion.AngleAxis(camRotation.y, Vector3.left);
         transform.localRotation = Quaternion.AngleAxis(camRotation.x, Vector3.up);
+
+        if(Input.GetMouseButtonDown(0) && canFire && currentAmmo > 0)
+        {
+            canFire = false;
+            currentAmmo--;
+            StartCoroutine("cooldownFire");
+        }
 
         Vector3 temp = myRB.velocity;
 
@@ -92,21 +106,11 @@ public class PlayerController : MonoBehaviour
 
         temp.z = horizontalMove * speed;
 
-        // Unable to make platforming at the moment. I think standing on top of a regular cube blocks the raycast. Could be something to do with either the code or the object
         if (Input.GetKeyDown(KeyCode.Space) && Physics.Raycast(transform.position, -transform.up, groundDetectDistance))
+        {
+            isGrounded = true;
             temp.y = jumpHeight;
-
-        // testing some crouching stuff. So far only changes the camera. Trying to make it change the player model but can't figure out how to change scale for now.
-        // camera values change when messing with scale stuff
-
-        if (Input.GetKeyDown(KeyCode.LeftControl))
-            playerCam.transform.position += -Vector3.up * 1.0f;
-
-        if (Input.GetKeyUp(KeyCode.LeftControl))
-            playerCam.transform.position += Vector3.up * 1.0f;
-
-        // end of testing area
-
+        }
         myRB.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
     }
 
@@ -122,8 +126,37 @@ public class PlayerController : MonoBehaviour
             Destroy(other.gameObject);
         }
 
-        //if (other.gameObject.tag == "weapon")
-            //other.gameObject.transform.SetParent(weaponSlot);
+        if ((currentAmmo < maxAmmo) && other.gameObject.tag == "ammoPickup")
+        {
+            currentAmmo += pickupAmmo;
+
+            if (currentAmmo > maxAmmo)
+                currentAmmo = maxAmmo;
+
+            Destroy(other.gameObject);
+        }
+
+        if (other.gameObject.tag == "weaponGun")
+        {
+            other.gameObject.transform.position = weaponSlotGun.position;
+
+            other.gameObject.transform.SetParent(weaponSlotGun);
+
+            switch(other.gameObject.name)
+            {
+                case "weaponGun0":
+                    weaponID = 0;
+                    fireRate = 1.0f;
+                    maxAmmo = 100.0f;
+                    currentAmmo = 50.0f;
+                    pickupAmmo = 10.0f;
+                    break;
+
+
+                default:
+                    break;
+            }
+        }
     }
 
     private void cooldown(bool condition, float timeLimit)
@@ -137,9 +170,9 @@ public class PlayerController : MonoBehaviour
             condition = true;
     }
 
-    IEnumerator cooldown(float time)
+    IEnumerator cooldownFire(float time)
     {
-        yield return new WaitForSeconds(time);
-        canSwing = true;
+        yield return new WaitForSeconds(fireRate);
+        canFire = true;
     }
 }
