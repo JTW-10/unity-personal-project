@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
 
     Vector2 camRotation;
 
-    public Transform weaponSlotGun;
+    public Transform weaponSlotBlaster;
     public Transform weaponSlotSword;
 
     // Player and camera values
@@ -20,31 +20,38 @@ public class PlayerController : MonoBehaviour
     public bool isGrounded = true;
 
     [Header("Movement Settings")]
-    public float speed = 10.0f;
+    public float speed = 10f;
     public float sprintMultiplier = 1.5f;
-    public float jumpHeight = 5.0f;
-    public float groundDetectDistance = 2.0f;
+    public float jumpHeight = 5f;
+    public float groundDetectDistance = 2f;
+    public float dashDistance = 5f;
+    public float dashCooldown = 3f;
+    public bool canDash = true;
 
     [Header("User Settings")]
-    public float mouseSensitivity = 2.0f;
-    public float Xsensitivity = 2.0f;
-    public float Ysensitivity = 2.0f;
+    public float mouseSensitivity = 2f;
+    public float Xsensitivity = 2f;
+    public float Ysensitivity = 2f;
     public float camRotationLimit = 90f;
     public bool sprintToggleOption = false;
 
     [Header("Player Stats")]
-    public float playerMaxHealth = 100.0f;
-    public float playerHealth = 100.0f;
-    public float pickupHealth = 25.0f; 
+    public float playerMaxHealth = 100f;
+    public float playerHealth = 100f;
+    public float pickupHealth = 25f; 
     public bool playerArmor = true;
 
-    [Header("Gun Weapon Stats")]
+    [Header("Blaster Weapon Stats")]
+    public GameObject shot;
     public int weaponID = -1;
-    public float fireRate = 0.0f;
-    public float maxAmmo = 0.0f;
-    public float currentAmmo = 0.0f;
-    public float pickupAmmo = 0.0f;
+    public float shotVel = 10000f;
+    public float fireRate = 0f;
+    public float maxAmmo = 0f;
+    public float currentAmmo = 0f;
+    public float pickupAmmo = 0f;
+    public float shotLifespan = 0f;
     public bool canFire = true;
+    public bool isAimed = false;
 
     // Start is called before the first frame update
     void Start()
@@ -68,11 +75,35 @@ public class PlayerController : MonoBehaviour
         playerCam.transform.localRotation = Quaternion.AngleAxis(camRotation.y, Vector3.left);
         transform.localRotation = Quaternion.AngleAxis(camRotation.x, Vector3.up);
 
-        if(Input.GetMouseButtonDown(0) && canFire && currentAmmo > 0)
+        if(Input.GetMouseButtonDown(0) && canFire && weaponID >= 0 && currentAmmo > 0)
         {
+            GameObject s = Instantiate(shot, weaponSlotBlaster.position, weaponSlotBlaster.rotation);
+            s.GetComponent<Rigidbody>().AddForce(playerCam.transform.forward += Vector3.forward * shotVel);
+            Destroy(s, shotLifespan);
+            
             canFire = false;
             currentAmmo--;
             StartCoroutine("cooldownFire");
+        }
+
+        if(Input.GetMouseButtonDown(1))
+        {
+            isAimed = true;
+            playerCam.transform.localPosition += Vector3.forward * 2f;
+            weaponSlotBlaster.transform.localPosition += Vector3.forward * 2f;
+        }
+        if(Input.GetMouseButtonUp(1))
+        {
+            isAimed = false;
+            playerCam.transform.localPosition += -Vector3.forward * 2f;
+            weaponSlotBlaster.transform.localPosition += -Vector3.forward * 2f;
+        }
+        
+        if(Input.GetKey(KeyCode.LeftAlt))
+        {
+            myRB.AddForce(transform.forward * dashDistance);
+            canDash = false;
+            StartCoroutine("cooldownDash");
         }
 
         Vector3 temp = myRB.velocity;
@@ -136,20 +167,23 @@ public class PlayerController : MonoBehaviour
             Destroy(other.gameObject);
         }
 
-        if (other.gameObject.tag == "weaponGun")
+        if (other.gameObject.tag == "weaponBlaster")
         {
-            other.gameObject.transform.position = weaponSlotGun.position;
+            other.gameObject.transform.position = weaponSlotBlaster.position;
 
-            other.gameObject.transform.SetParent(weaponSlotGun);
+            other.gameObject.transform.SetParent(weaponSlotBlaster);
 
             switch(other.gameObject.name)
             {
-                case "weaponGun0":
+                case "weaponBlaster0":
                     weaponID = 0;
-                    fireRate = 1.0f;
+                    shotVel = 1000;
+                    fireRate = 0.05f;
                     maxAmmo = 100.0f;
                     currentAmmo = 50.0f;
                     pickupAmmo = 10.0f;
+                    shotLifespan = 10;
+                    isAimed = false;
                     break;
 
 
@@ -170,9 +204,15 @@ public class PlayerController : MonoBehaviour
             condition = true;
     }
 
-    IEnumerator cooldownFire(float time)
+    IEnumerator cooldownFire()
     {
         yield return new WaitForSeconds(fireRate);
         canFire = true;
+    }
+
+    IEnumerator cooldownDash()
+    {
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
     }
 }
