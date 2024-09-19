@@ -192,12 +192,12 @@ MonoBehaviour:
   sprintMultiplier: 2.5
   jumpHeight: 5
   groundDetectDistance: 1
-  dashDistance: 5
+  dashDistance: 10000
   dashCooldown: 3
   canDash: 1
-  mouseSensitivity: 2
-  Xsensitivity: 2
-  Ysensitivity: 2
+  mouseSensitivity: 3
+  Xsensitivity: 3
+  Ysensitivity: 3
   camRotationLimit: 90
   sprintToggleOption: 1
   playerMaxHealth: 100
@@ -238,13 +238,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1422843646148748279}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0.337, y: 0.20000005, z: 0.704}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 1}
+  m_LocalScale: {x: 0.25, y: 0.35, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4875125685839557914}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1513383947620517469
 GameObject:
   m_ObjectHideFlags: 0
