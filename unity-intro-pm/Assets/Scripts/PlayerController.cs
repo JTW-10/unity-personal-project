@@ -24,9 +24,12 @@ public class PlayerController : MonoBehaviour
     public float sprintMultiplier = 1.5f;
     public float jumpHeight = 5f;
     public float groundDetectDistance = 2f;
-    public bool canDash = true;
-    public float dashDistance = 10000f;
-    public float dashCooldown = 3f;
+    public bool canDodge = true;
+    public bool isDodging = false; // CHANGE THIS IMMEDIATELY ONCE YOU FIGURE OUT HOW TO DODGE SMOOTHLY
+    public float dodgeDistance = 50f;
+    public float dodgeCooldown = 3f;
+    
+      
 
     [Header("User Settings")]
     public float mouseSensitivity = 3f;
@@ -47,7 +50,7 @@ public class PlayerController : MonoBehaviour
     [Header("Blaster Weapon Stats")]
     public GameObject shot;
     public int weaponID = -1;
-    public float shotVel = 10000f;
+    public float shotVel = 0f;
     public float fireRate = 0f;
     public float maxAmmo = 0f;
     public float currentAmmo = 0f;
@@ -93,11 +96,13 @@ public class PlayerController : MonoBehaviour
         {
             isAimed = true;
             playerCam.transform.localPosition += Vector3.forward * 2f;
+            weaponSlotBlaster.transform.localPosition += Vector3.forward * 2f;
         }
         if(Input.GetMouseButtonUp(1))
         {
             isAimed = false;
             playerCam.transform.localPosition += -Vector3.forward * 2f;
+            weaponSlotBlaster.transform.localPosition += -Vector3.forward * 2f;
         }
 
         Vector3 temp = myRB.velocity;
@@ -123,11 +128,12 @@ public class PlayerController : MonoBehaviour
                 sprintMode = false;
         }
 
-        if (Input.GetKey(KeyCode.LeftAlt) && canDash && verticalMove > 0)
+        if (Input.GetKey(KeyCode.LeftAlt) && canDodge && verticalMove > 0)
         {
-            myRB.AddForce(transform.forward * dashDistance);
-            canDash = false;
-            StartCoroutine("cooldownDash");
+            myRB.AddForce(transform.forward * dodgeDistance);
+            canDodge = false;
+            isDodging = true;
+            StartCoroutine("cooldownDodge");
         }
 
 
@@ -179,7 +185,7 @@ public class PlayerController : MonoBehaviour
             {
                 case "weaponBlaster0":
                     weaponID = 0;
-                    shotVel = 1000;
+                    shotVel = 10000;
                     fireRate = 0.05f;
                     maxAmmo = 100.0f;
                     currentAmmo = 50.0f;
@@ -231,10 +237,11 @@ public class PlayerController : MonoBehaviour
         canFire = true;
     }
 
-    IEnumerator cooldownDash()
+    IEnumerator cooldownDodge()
     {
-        yield return new WaitForSeconds(dashCooldown);
-        canDash = true;
+        yield return new WaitForSeconds(dodgeCooldown);
+        canDodge = true;
+        isDodging = false;
     }
 
     IEnumerator cooldownHit()
