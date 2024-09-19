@@ -9,6 +9,7 @@ TagManager:
   - ammoPickup
   - weaponBlaster
   - Shot
+  - enemy
   layers:
   - Default
   - TransparentFX
