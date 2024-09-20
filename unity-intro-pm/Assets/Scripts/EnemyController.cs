@@ -29,6 +29,7 @@ public class EnemyController : MonoBehaviour
         {
             Destroy(other.gameObject);
             health -= 10;
+            Debug.Log("enemy has taken damage");
         }
     }
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
@@ -16,7 +17,7 @@ public class PlayerController : MonoBehaviour
 
     // Player and camera values
 
-    public bool sprintMode = false;
+    public bool sprintMode = false;         // DO NOT FORGET TO GET THE PARRY BUTTON WORKING. Needs to have a cooldown, short parry window, and have it do something that dodge doesnt (maybe. last part could be handled in the future)
     public bool isGrounded = true;
 
     [Header("Movement Settings")]
@@ -25,8 +26,7 @@ public class PlayerController : MonoBehaviour
     public float jumpHeight = 5f;
     public float groundDetectDistance = 2f;
     public bool canDodge = true;
-    public bool isDodging = false; // CHANGE THIS IMMEDIATELY ONCE YOU FIGURE OUT HOW TO DODGE SMOOTHLY
-    public float dodgeDistance = 50f;
+    public bool isDodging = false;
     public float dodgeCooldown = 3f;
     
       
@@ -44,12 +44,16 @@ public class PlayerController : MonoBehaviour
     public float pickupHealth = 25f;
     public float hitCooldown = 2f;
     public float armorCooldown = 10f;
+    public float dodgeWindow = 0.5f;
+    public float parryWindow = 0.2f;
     public bool canHit = true;
+    public bool canParry = true;
     public bool playerArmor = true;
+    public bool isParrying = false;
 
     [Header("Blaster Weapon Stats")]
     public GameObject shot;
-    public int weaponID = -1;
+    public int blasterID = -1;
     public float shotVel = 0f;
     public float fireRate = 0f;
     public float maxAmmo = 0f;
@@ -58,6 +62,9 @@ public class PlayerController : MonoBehaviour
     public float shotLifespan = 0f;
     public bool canFire = true;
     public bool isAimed = false;
+
+    [Header("Sword Weapon Stats")]
+    public int swordID = -1;
 
     // Start is called before the first frame update
     void Start()
@@ -75,13 +82,25 @@ public class PlayerController : MonoBehaviour
     {
         camRotation.x += Input.GetAxisRaw("Mouse X") * mouseSensitivity;
         camRotation.y += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
+        
 
         camRotation.y = Mathf.Clamp(camRotation.y, -camRotationLimit, camRotationLimit);
 
         playerCam.transform.localRotation = Quaternion.AngleAxis(camRotation.y, Vector3.left);
         transform.localRotation = Quaternion.AngleAxis(camRotation.x, Vector3.up);
 
-        if(Input.GetMouseButtonDown(0) && canFire && weaponID >= 0 && currentAmmo > 0)
+        if (Input.GetMouseButtonDown(0) && swordID >= 0 && !isAimed)
+        {
+            Debug.Log("normal swing");
+
+            if (isDodging)
+            {
+                Debug.Log("dodge swing");
+            }
+        }
+
+        // firing code
+        if(Input.GetMouseButtonDown(0) && canFire && isAimed && blasterID >= 0 && currentAmmo > 0)
         {
             GameObject s = Instantiate(shot, weaponSlotBlaster.position, weaponSlotBlaster.rotation);
             s.GetComponent<Rigidbody>().AddForce(playerCam.transform.forward * shotVel);
@@ -90,21 +109,28 @@ public class PlayerController : MonoBehaviour
             canFire = false;
             currentAmmo--;
             StartCoroutine("cooldownFire");
+            Debug.Log("fired weapon");
         }
 
-        if(Input.GetMouseButtonDown(1))
+        // aiming code
+        if(Input.GetMouseButtonDown(1) && !isDodging)
         {
             isAimed = true;
-            playerCam.transform.localPosition += Vector3.forward * 2f;
-            weaponSlotBlaster.transform.localPosition += Vector3.forward * 2f;
         }
         if(Input.GetMouseButtonUp(1))
         {
             isAimed = false;
-            playerCam.transform.localPosition += -Vector3.forward * 2f;
-            weaponSlotBlaster.transform.localPosition += -Vector3.forward * 2f;
+        }
+        if(isAimed)
+        {
+            playerCam.fieldOfView = 40;
+        }
+        if(!isAimed)
+        {
+            playerCam.fieldOfView = 60;
         }
 
+        // movement stuff. will probably change due to jank
         Vector3 temp = myRB.velocity;
 
         float verticalMove = Input.GetAxisRaw("Vertical");
@@ -128,14 +154,28 @@ public class PlayerController : MonoBehaviour
                 sprintMode = false;
         }
 
-        if (Input.GetKey(KeyCode.LeftAlt) && canDodge && verticalMove > 0)
+        // janky dodge code. figure out if you're going to keep this or change it to use a lerp or transform.position on monday
+        if (Input.GetKeyDown(KeyCode.LeftAlt) && canDodge && !sprintMode && !isParrying) 
         {
-            myRB.AddForce(transform.forward * dodgeDistance);
+            speed += 20f;
             canDodge = false;
             isDodging = true;
+            canHit = false;
+            isAimed = false;
+            playerCam.fieldOfView = 90;
             StartCoroutine("cooldownDodge");
+            StartCoroutine("dodgingReset");
+            StartCoroutine("dodgingWindow");
+            Debug.Log("Is dodging");
         }
 
+        // janky parrying code
+        if (Input.GetKeyDown(KeyCode.C) && !sprintMode)
+        {
+            isParrying = true;
+            isAimed = false;
+            StartCoroutine("parryWindow");
+        }
 
         if (!sprintMode)
             temp.x = verticalMove * speed;
@@ -151,6 +191,50 @@ public class PlayerController : MonoBehaviour
             temp.y = jumpHeight;
         }
         myRB.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
+
+        // following stuff is just to recognize input only during dashing state
+        if (Input.GetKeyDown(KeyCode.X) && isDodging)
+        {
+            Debug.Log("dodgeattack");
+        }
+        // delete this later
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "enemy")
+        {
+            if (playerArmor && canHit)
+            {
+                playerArmor = false;
+                canHit = false;
+                StartCoroutine("cooldownHit");
+                Debug.Log("armor is hit");
+            }
+
+            if (!playerArmor && canHit)
+            {
+                playerHealth -= 25f;
+                canHit = false;
+                StartCoroutine("cooldownHit");
+                Debug.Log("health is hit and armor is reset i hope");
+            }
+
+            if (isDodging)
+            {
+                Debug.Log("dodge worked");
+                playerArmor = true; // remember that this is going to be the main way to get armor back in the future
+                StartCoroutine("cooldownHit");
+            }
+
+            if (isParrying)
+            {
+                Debug.Log("attack parried");
+                playerArmor = true;
+
+                StartCoroutine("parryingWindow");
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -184,7 +268,7 @@ public class PlayerController : MonoBehaviour
             switch(other.gameObject.name)
             {
                 case "weaponBlaster0":
-                    weaponID = 0;
+                    blasterID = 0;
                     shotVel = 10000;
                     fireRate = 0.05f;
                     maxAmmo = 100.0f;
@@ -197,25 +281,6 @@ public class PlayerController : MonoBehaviour
 
                 default:
                     break;
-            }
-        }
-
-        if (other.gameObject.tag == "enemy")
-        {
-            if (playerArmor)
-            {
-                playerArmor = false;
-                StartCoroutine("cooldownArmor");
-                Debug.Log("armor is hit");
-            }
-
-            else
-            {
-                playerHealth -= 25f;
-                canHit = false;
-                StartCoroutine("cooldownHit");
-                StartCoroutine("cooldownArmor");
-                Debug.Log("health is hit and armor is reset i hope");
             }
         }
     }
@@ -241,7 +306,7 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(dodgeCooldown);
         canDodge = true;
-        isDodging = false;
+        Debug.Log("dodge cooldown finished");
     }
 
     IEnumerator cooldownHit()
@@ -250,9 +315,32 @@ public class PlayerController : MonoBehaviour
         canHit = true;
     }
 
-    IEnumerator cooldownArmor() // this is likely going to need to be changed later, as I want armor to come from parries and dodges
+    IEnumerator dodgingReset()
     {
-        yield return new WaitForSeconds(armorCooldown);
-        playerArmor = true;
+        yield return new WaitForSeconds(0.2f);
+        speed = 10f;
+        playerCam.fieldOfView = 60;
+        Debug.Log("dodge speed over");
     }
+
+    IEnumerator dodgingWindow()
+    {
+        yield return new WaitForSeconds(dodgeWindow);
+        isDodging = false;
+        canHit = true;
+        Debug.Log("dodge window is over");
+    }
+
+    IEnumerator parryingWindow()
+    {
+        yield return new WaitForSeconds(parryWindow);
+        isParrying = false;
+    }
+
+    IEnumerator cooldownParry()
+    {
+        yield return new WaitForSeconds(3f);
+        canParry = true;
+    }
+
 }

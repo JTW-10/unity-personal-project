@@ -498,6 +498,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6670247066421863446, guid: f7088fb21bfd936488e804b853978665, type: 3}
     - target: {fileID: 6278124311014144422, guid: d277234c47b06d642be09e77c5c63c4e, type: 3}
+      propertyPath: dodgeDistance
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278124311014144422, guid: d277234c47b06d642be09e77c5c63c4e, type: 3}
       propertyPath: weaponSlotSword
       value: 
       objectReference: {fileID: 1504842476}
@@ -1032,7 +1036,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.8118, y: -0, z: 5.156}
-  m_LocalScale: {x: 1.6021116, y: 1, z: 2.1607766}
+  m_LocalScale: {x: 3, y: 1, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
