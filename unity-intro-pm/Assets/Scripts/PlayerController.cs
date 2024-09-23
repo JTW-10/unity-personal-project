@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
 
     public Transform weaponSlotBlaster;
     public Transform weaponSlotSword;
+    public EnemyController enemyScript;
 
     // Player and camera values
 
@@ -45,7 +46,7 @@ public class PlayerController : MonoBehaviour
     public float hitCooldown = 2f;
     public float armorCooldown = 10f;
     public float dodgeWindow = 0.5f;
-    public float parryWindow = 0.2f;
+    public float parryWindow = 1f;
     public bool canHit = true;
     public bool canParry = true;
     public bool playerArmor = true;
@@ -167,14 +168,19 @@ public class PlayerController : MonoBehaviour
             StartCoroutine("dodgingReset");
             StartCoroutine("dodgingWindow");
             Debug.Log("Is dodging");
+            // make sure to have dodge animation, probably with some sort of glitchy effect
         }
 
         // janky parrying code
-        if (Input.GetKeyDown(KeyCode.C) && !sprintMode)
+        if (Input.GetKeyDown(KeyCode.C) && !sprintMode && canParry)
         {
             isParrying = true;
             isAimed = false;
-            StartCoroutine("parryWindow");
+            canHit = false;
+            canParry = false;
+            StartCoroutine("parryingWindow");
+            StartCoroutine("cooldownParry");
+            // make sure to have parry animation, preferably with a deflecting animation if you land the parry
         }
 
         if (!sprintMode)
@@ -229,9 +235,9 @@ public class PlayerController : MonoBehaviour
 
             if (isParrying)
             {
-                Debug.Log("attack parried");
+                Debug.Log("attack parried"); // deflection animation will go here
                 playerArmor = true;
-
+                playerHealth += 10;
                 StartCoroutine("parryingWindow");
             }
         }
@@ -335,6 +341,7 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(parryWindow);
         isParrying = false;
+        canHit = true;
     }
 
     IEnumerator cooldownParry()
