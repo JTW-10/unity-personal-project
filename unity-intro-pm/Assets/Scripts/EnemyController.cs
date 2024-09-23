@@ -37,11 +37,8 @@ public class EnemyController : MonoBehaviour
     {
         if (other.gameObject.tag == "Shot")
         {
-            Vector3 awayFromPlayer = Player.transform.position - transform.position;
-
             Destroy(other.gameObject);
             health -= 10;
-            myRB.AddForce(awayFromPlayer * knockback, ForceMode.Impulse); // Isn't working, find some way to fix it
             Debug.Log("enemy has taken damage");
         }
     }
@@ -50,11 +47,8 @@ public class EnemyController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player" && playerScript.isParrying == true)
         {
-            Vector3 awayFromPlayer = Player.transform.position - transform.position;
-
             isStunned = true;
             StartCoroutine("stunEnd");
-            myRB.AddForce(awayFromPlayer * knockback, ForceMode.Impulse);
         }
     }
     IEnumerator stunEnd()
