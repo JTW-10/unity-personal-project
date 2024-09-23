@@ -18,17 +18,18 @@ public class PlayerController : MonoBehaviour
 
     // Player and camera values
 
-    public bool sprintMode = false;         // DO NOT FORGET TO GET THE PARRY BUTTON WORKING. Needs to have a cooldown, short parry window, and have it do something that dodge doesnt (maybe. last part could be handled in the future)
+    public bool sprintMode = false;         //   having issues with parry not working, something about objects that I can look at tomorrow
     public bool isGrounded = true;
 
     [Header("Movement Settings")]
     public float speed = 10f;
     public float sprintMultiplier = 1.5f;
     public float jumpHeight = 5f;
-    public float groundDetectDistance = 2f;
+    public float groundDetectDistance = 1.1f;
     public bool canDodge = true;
     public bool isDodging = false;
     public float dodgeCooldown = 3f;
+    public float doubleJump = 0;
     
       
 
@@ -191,9 +192,29 @@ public class PlayerController : MonoBehaviour
 
         temp.z = horizontalMove * speed;
 
-        if (Input.GetKeyDown(KeyCode.Space) && Physics.Raycast(transform.position, -transform.up, groundDetectDistance))
+        if (Physics.Raycast(transform.position, -transform.up, groundDetectDistance)) // fix this since you just float up now
         {
             isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
+        }
+
+        if (isGrounded)
+        {
+            doubleJump = 0;
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (isGrounded && doubleJump < 1)
+            {
+                temp.y = jumpHeight;
+                doubleJump += 1;
+            }
+        }
+        { 
             temp.y = jumpHeight;
         }
         myRB.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);

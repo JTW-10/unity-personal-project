@@ -366,6 +366,10 @@ PrefabInstance:
       propertyPath: weaponSlotBlaster
       value: 
       objectReference: {fileID: 1973439543}
+    - target: {fileID: 6278124311014144422, guid: d277234c47b06d642be09e77c5c63c4e, type: 3}
+      propertyPath: groundDetectDistance
+      value: 1.1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
