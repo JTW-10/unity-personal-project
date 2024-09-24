@@ -14,7 +14,8 @@ public class PlayerController : MonoBehaviour
 
     public Transform weaponSlotBlaster;
     public Transform weaponSlotSword;
-    public EnemyController enemyScript;
+    public TrainingDummyController dummy;
+    public BasicEnemyController basicEnemy;
 
     // Player and camera values
 
@@ -24,7 +25,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     public float speed = 10f;
     public float sprintMultiplier = 1.5f;
-    public float jumpHeight = 5f;
+    public float jumpHeight = 10f;
     public float groundDetectDistance = 1.1f;
     public bool canDodge = true;
     public bool isDodging = false;
@@ -62,6 +63,7 @@ public class PlayerController : MonoBehaviour
     public float currentAmmo = 0f;
     public float pickupAmmo = 0f;
     public float shotLifespan = 0f;
+    public float weaponDamage = 0f;
     public bool canFire = true;
     public bool isAimed = false;
 
@@ -72,11 +74,14 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         myRB = GetComponent<Rigidbody>();
-        playerCam = transform.GetChild(0).GetComponent<Camera>();
+        playerCam = Camera.main;
 
         camRotation = Vector2.zero;
         UnityEngine.Cursor.visible = false;
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+
+        dummy = GameObject.Find("TrainingDummy").GetComponent<TrainingDummyController>();
+        basicEnemy = GameObject.Find("BasicEnemy").GetComponent<BasicEnemyController>();
     }
 
     // Update is called once per frame
@@ -208,15 +213,13 @@ public class PlayerController : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (isGrounded && doubleJump < 1)
+            if (isGrounded || doubleJump < 1)
             {
                 temp.y = jumpHeight;
-                doubleJump += 1;
+                doubleJump++;
             }
         }
-        { 
-            temp.y = jumpHeight;
-        }
+     
         myRB.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
 
         // following stuff is just to recognize input only during dashing state
@@ -227,7 +230,7 @@ public class PlayerController : MonoBehaviour
         // delete this later
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision) // 
     {
         if (collision.gameObject.tag == "enemy")
         {
@@ -239,9 +242,9 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("armor is hit");
             }
 
-            if (!playerArmor && canHit)
+            if (playerArmor = false && canHit)
             {
-                playerHealth -= 25f;
+                playerHealth -= basicEnemy.damageGiven;
                 canHit = false;
                 StartCoroutine("cooldownHit");
                 Debug.Log("health is hit and armor is reset i hope");
@@ -302,6 +305,7 @@ public class PlayerController : MonoBehaviour
                     currentAmmo = 50.0f;
                     pickupAmmo = 10.0f;
                     shotLifespan = 10;
+                    weaponDamage = 15;
                     isAimed = false;
                     break;
 

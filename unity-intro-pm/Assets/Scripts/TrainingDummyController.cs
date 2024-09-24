@@ -5,11 +5,11 @@ using Unity.PlasticSCM.Editor.WebApi;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public class TrainingDummyController : MonoBehaviour
 {
     Rigidbody myRB;
-    public PlayerController playerScript;
-    public Transform Player;
+    public PlayerController player;
+    
 
     [Header ("Basic Enemy Settings")]
     public float health = 100;
@@ -21,7 +21,7 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        // add void start() text from BasicEnemyController.cs
     }
 
     // Update is called once per frame
@@ -38,18 +38,14 @@ public class EnemyController : MonoBehaviour
         if (other.gameObject.tag == "Shot")
         {
             Destroy(other.gameObject);
-            health -= 10;
+            health -= player.weaponDamage;
             Debug.Log("enemy has taken damage");
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Player" && playerScript.isParrying == true)
-        {
-            isStunned = true;
-            StartCoroutine("stunEnd");
-        }
+        // placeholder, probably want to put something for parrying here or add parry knockback in the main playercontroller script
     }
     IEnumerator stunEnd()
     {
