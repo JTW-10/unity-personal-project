@@ -47,5 +47,13 @@ public class BasicEnemyController : MonoBehaviour
             Debug.Log("enemy has taken damage");
         }
     }
+    private void detectionRadius(Vector3 center, float radius) // try to figure out how this actually works
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(center, radius);
+        foreach (var hitcollider in hitColliders)
+        {
+            hitcollider.SendMessage("AddDamage");
+        }
+    }
 }
 

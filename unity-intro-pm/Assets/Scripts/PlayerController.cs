@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     public float speed = 10f;
     public float sprintMultiplier = 1.5f;
-    public float jumpHeight = 10f;
+    public float jumpHeight = 5f;
     public float groundDetectDistance = 1.1f;
     public bool canDodge = true;
     public bool isDodging = false;
@@ -242,7 +242,7 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("armor is hit");
             }
 
-            if (playerArmor = false && canHit)
+            if (!playerArmor && canHit)
             {
                 playerHealth -= basicEnemy.damageGiven;
                 canHit = false;

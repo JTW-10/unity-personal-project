@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Unity.PlasticSCM.Editor.WebApi;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class TrainingDummyController : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class TrainingDummyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // add void start() text from BasicEnemyController.cs
+        player = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
     // Update is called once per frame

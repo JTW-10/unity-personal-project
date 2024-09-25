@@ -284,7 +284,7 @@ MonoBehaviour:
   isGrounded: 1
   speed: 10
   sprintMultiplier: 2.5
-  jumpHeight: 10
+  jumpHeight: 5
   groundDetectDistance: 1
   canDodge: 1
   isDodging: 0
