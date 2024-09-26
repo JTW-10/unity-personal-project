@@ -69,6 +69,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Sword Weapon Stats")]
     public int swordID = -1;
+    public float stunDuration = 1f;
 
     // Start is called before the first frame update
     void Start()
@@ -262,7 +263,9 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("attack parried"); // deflection animation will go here
                 playerArmor = true;
                 playerHealth += 10;
+                basicEnemy.isStunned = true;
                 StartCoroutine("parryingWindow");
+                StartCoroutine("stunEnd");
             }
         }
     }
@@ -375,4 +378,10 @@ public class PlayerController : MonoBehaviour
         canParry = true;
     }
 
+    IEnumerator stunEnd()
+    {
+        yield return new WaitForSeconds(stunDuration);
+        basicEnemy.isStunned = false;
+        basicEnemy.agent.isStopped = false;
+    }
 }

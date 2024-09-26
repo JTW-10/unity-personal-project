@@ -26,7 +26,7 @@ public class BasicEnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        agent.destination = player.transform.position; // find way to check area for player.
+        //agent.destination = player.transform.position; // find way to check area for player.
                                                        // if found, shoot raycast at direction of player to check for obstacle blocking vision
                                                        // if raycast hits player, make the agent destination the player for a limited amount of time
                                                        // once time is up, repeat
