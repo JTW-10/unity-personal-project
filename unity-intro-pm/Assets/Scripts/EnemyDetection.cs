@@ -9,6 +9,9 @@ public class EnemyDetection : MonoBehaviour
     public BasicEnemyController basicEnemy;
     public PlayerController player;
     public Transform Player;
+    public bool isAggro = false;
+    public float searchTime = 5;
+    public float detectRadius = 5;
 
     // Start is called before the first frame update
     void Start()
@@ -20,31 +23,31 @@ public class EnemyDetection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.forward, out hit, Mathf.Infinity))
+        var distance = Vector3.Distance(transform.position, player.transform.position);
+        if (distance < detectRadius)
         {
-            if (hit.transform == Player)
-            {
-                basicEnemy.agent.destination = player.transform.position;
-                Debug.Log("detected in line of sight");
-            }
-            else
-            {
-                Debug.Log("not detected in line of sight");
-            }
+            isAggro = true;
+            Debug.Log("playerfound");
         }
-        if (basicEnemy.isStunned)
+        else
         {
-            basicEnemy.agent.isStopped = true;
-            Debug.Log("enemy is stunned and should not be moving");
+            isAggro = false;
+        }
+
+        if (isAggro)
+        {
+            basicEnemy.agent.isStopped = false;
+            basicEnemy.agent.destination = player.transform.position;
+        }
+        if (!isAggro)
+        {
+            StartCoroutine("enemySearching");
         }
     }
-    private void OnTriggerEnter(Collider other)
+
+    IEnumerator enemySearching()
     {
-        if (other.name == "Player")
-        {
-            transform.LookAt(Player);
-            Debug.Log("player in radius");
-        }
+        yield return new WaitForSeconds(searchTime);
+        basicEnemy.agent.isStopped = true;
     }
 }
