@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 {
     Rigidbody myRB;
     Camera playerCam;
+    GameManager gm;
 
     Vector2 camRotation;
 
@@ -74,6 +75,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         myRB = GetComponent<Rigidbody>();
         playerCam = Camera.main;
 
@@ -88,147 +90,150 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        camRotation.x += Input.GetAxisRaw("Mouse X") * mouseSensitivity;
-        camRotation.y += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
-        
-
-        camRotation.y = Mathf.Clamp(camRotation.y, -camRotationLimit, camRotationLimit);
-
-        playerCam.transform.localRotation = Quaternion.AngleAxis(camRotation.y, Vector3.left);
-        transform.localRotation = Quaternion.AngleAxis(camRotation.x, Vector3.up);
-
-        if (Input.GetMouseButtonDown(0) && swordID >= 0 && !isAimed)
+        if(!gm.isPaused)
         {
-            Debug.Log("normal swing");
+            camRotation.x += Input.GetAxisRaw("Mouse X") * mouseSensitivity;
+            camRotation.y += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
 
-            if (isDodging)
+
+            camRotation.y = Mathf.Clamp(camRotation.y, -camRotationLimit, camRotationLimit);
+
+            playerCam.transform.localRotation = Quaternion.AngleAxis(camRotation.y, Vector3.left);
+            transform.localRotation = Quaternion.AngleAxis(camRotation.x, Vector3.up);
+
+            if (Input.GetMouseButtonDown(0) && swordID >= 0 && !isAimed)
             {
-                Debug.Log("dodge swing");
+                Debug.Log("normal swing");
+
+                if (isDodging)
+                {
+                    Debug.Log("dodge swing");
+                }
             }
-        }
 
-        // firing code
-        if(Input.GetMouseButtonDown(0) && canFire && isAimed && blasterID >= 0 && currentAmmo > 0)
-        {
-            GameObject s = Instantiate(shot, weaponSlotBlaster.position, weaponSlotBlaster.rotation);
-            s.GetComponent<Rigidbody>().AddForce(playerCam.transform.forward * shotVel);
-            Destroy(s, shotLifespan);
-            
-            canFire = false;
-            currentAmmo--;
-            StartCoroutine("cooldownFire");
-            Debug.Log("fired weapon");
-        }
-
-        // aiming code
-        if(Input.GetMouseButtonDown(1) && !isDodging)
-        {
-            isAimed = true;
-        }
-        if(Input.GetMouseButtonUp(1))
-        {
-            isAimed = false;
-        }
-        if(isAimed)
-        {
-            playerCam.fieldOfView = 40;
-        }
-        if(!isAimed)
-        {
-            playerCam.fieldOfView = 60;
-        }
-
-        // movement stuff. will probably change due to jank
-        Vector3 temp = myRB.velocity;
-
-        float verticalMove = Input.GetAxisRaw("Vertical");
-        float horizontalMove = Input.GetAxisRaw("Horizontal");
-
-        if (!sprintToggleOption)
-        {
-            if (Input.GetKey(KeyCode.LeftShift))
-                sprintMode = true;
-
-            if (Input.GetKeyUp(KeyCode.LeftShift))
-                sprintMode = false;
-        }
-
-        if (sprintToggleOption)
-        {
-            if (Input.GetKey(KeyCode.LeftShift) && verticalMove > 0)
-                sprintMode = true;
-
-            if (verticalMove <= 0)
-                sprintMode = false;
-        }
-
-        // janky dodge code. figure out if you're going to keep this or change it to use a lerp or transform.position on monday
-        if (Input.GetKeyDown(KeyCode.LeftAlt) && canDodge && !sprintMode && !isParrying) 
-        {
-            speed += 20f;
-            canDodge = false;
-            isDodging = true;
-            canHit = false;
-            isAimed = false;
-            playerCam.fieldOfView = 90;
-            StartCoroutine("cooldownDodge");
-            StartCoroutine("dodgingReset");
-            StartCoroutine("dodgingWindow");
-            Debug.Log("Is dodging");
-            // make sure to have dodge animation, probably with some sort of glitchy effect
-        }
-
-        // janky parrying code
-        if (Input.GetKeyDown(KeyCode.C) && !sprintMode && canParry)
-        {
-            isParrying = true;
-            isAimed = false;
-            canHit = false;
-            canParry = false;
-            StartCoroutine("parryingWindow");
-            StartCoroutine("cooldownParry");
-            // make sure to have parry animation, preferably with a deflecting animation if you land the parry
-        }
-
-        if (!sprintMode)
-            temp.x = verticalMove * speed;
-
-        if (sprintMode)
-            temp.x = verticalMove * speed * sprintMultiplier;
-
-        temp.z = horizontalMove * speed;
-
-        if (Physics.Raycast(transform.position, -transform.up, groundDetectDistance)) // fix this since you just float up now
-        {
-            isGrounded = true;
-        }
-        else
-        {
-            isGrounded = false;
-        }
-
-        if (isGrounded)
-        {
-            doubleJump = 0;
-        }
-        
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (isGrounded || doubleJump < 1)
+            // firing code
+            if (Input.GetMouseButtonDown(0) && canFire && isAimed && blasterID >= 0 && currentAmmo > 0)
             {
-                temp.y = jumpHeight;
-                doubleJump++;
-            }
-        }
-     
-        myRB.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
+                GameObject s = Instantiate(shot, weaponSlotBlaster.position, weaponSlotBlaster.rotation);
+                s.GetComponent<Rigidbody>().AddForce(playerCam.transform.forward * shotVel);
+                Destroy(s, shotLifespan);
 
-        // following stuff is just to recognize input only during dashing state
-        if (Input.GetKeyDown(KeyCode.X) && isDodging)
-        {
-            Debug.Log("dodgeattack");
+                canFire = false;
+                currentAmmo--;
+                StartCoroutine("cooldownFire");
+                Debug.Log("fired weapon");
+            }
+
+            // aiming code
+            if (Input.GetMouseButtonDown(1) && !isDodging)
+            {
+                isAimed = true;
+            }
+            if (Input.GetMouseButtonUp(1))
+            {
+                isAimed = false;
+            }
+            if (isAimed)
+            {
+                playerCam.fieldOfView = 40;
+            }
+            if (!isAimed)
+            {
+                playerCam.fieldOfView = 60;
+            }
+
+            // movement stuff. will probably change due to jank
+            Vector3 temp = myRB.velocity;
+
+            float verticalMove = Input.GetAxisRaw("Vertical");
+            float horizontalMove = Input.GetAxisRaw("Horizontal");
+
+            if (!sprintToggleOption)
+            {
+                if (Input.GetKey(KeyCode.LeftShift))
+                    sprintMode = true;
+
+                if (Input.GetKeyUp(KeyCode.LeftShift))
+                    sprintMode = false;
+            }
+
+            if (sprintToggleOption)
+            {
+                if (Input.GetKey(KeyCode.LeftShift) && verticalMove > 0)
+                    sprintMode = true;
+
+                if (verticalMove <= 0)
+                    sprintMode = false;
+            }
+
+            // janky dodge code. figure out if you're going to keep this or change it to use a lerp or transform.position on monday
+            if (Input.GetKeyDown(KeyCode.LeftAlt) && canDodge && !sprintMode && !isParrying)
+            {
+                speed += 20f;
+                canDodge = false;
+                isDodging = true;
+                canHit = false;
+                isAimed = false;
+                playerCam.fieldOfView = 90;
+                StartCoroutine("cooldownDodge");
+                StartCoroutine("dodgingReset");
+                StartCoroutine("dodgingWindow");
+                Debug.Log("Is dodging");
+                // make sure to have dodge animation, probably with some sort of glitchy effect
+            }
+
+            // janky parrying code
+            if (Input.GetKeyDown(KeyCode.C) && !sprintMode && canParry)
+            {
+                isParrying = true;
+                isAimed = false;
+                canHit = false;
+                canParry = false;
+                StartCoroutine("parryingWindow");
+                StartCoroutine("cooldownParry");
+                // make sure to have parry animation, preferably with a deflecting animation if you land the parry
+            }
+
+            if (!sprintMode)
+                temp.x = verticalMove * speed;
+
+            if (sprintMode)
+                temp.x = verticalMove * speed * sprintMultiplier;
+
+            temp.z = horizontalMove * speed;
+
+            if (Physics.Raycast(transform.position, -transform.up, groundDetectDistance)) // fix this since you just float up now
+            {
+                isGrounded = true;
+            }
+            else
+            {
+                isGrounded = false;
+            }
+
+            if (isGrounded)
+            {
+                doubleJump = 0;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (isGrounded || doubleJump < 1)
+                {
+                    temp.y = jumpHeight;
+                    doubleJump++;
+                }
+            }
+
+            myRB.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
+
+            // following stuff is just to recognize input only during dashing state
+            if (Input.GetKeyDown(KeyCode.X) && isDodging)
+            {
+                Debug.Log("dodgeattack");
+            }
+            // delete this later
         }
-        // delete this later
     }
 
     private void OnCollisionEnter(Collision collision) // 
@@ -255,6 +260,8 @@ public class PlayerController : MonoBehaviour
             {
                 Debug.Log("dodge worked");
                 playerArmor = true; // remember that this is going to be the main way to get armor back in the future
+                Time.timeScale = 0.3f;
+                StartCoroutine("hitStop");
                 StartCoroutine("cooldownHit");
             }
 
@@ -264,6 +271,8 @@ public class PlayerController : MonoBehaviour
                 playerArmor = true;
                 playerHealth += 10;
                 basicEnemy.isStunned = true;
+                Time.timeScale = 0.3f;
+                StartCoroutine("hitStop");
                 StartCoroutine("parryingWindow");
                 StartCoroutine("stunEnd");
             }
@@ -383,5 +392,11 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(stunDuration);
         basicEnemy.isStunned = false;
         basicEnemy.agent.isStopped = false;
+    }
+
+    IEnumerator hitStop()
+    {
+        yield return new WaitForSeconds(0.1f);
+        Time.timeScale = 1;
     }
 }
