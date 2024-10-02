@@ -20,49 +20,53 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerData = GameObject.Find("Player").GetComponent<PlayerController>();
+        if (SceneManager.GetActiveScene().buildIndex > 0)
+            playerData = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        healthBar.fillAmount = Mathf.Clamp(playerData.playerHealth / playerData.playerMaxHealth, 0, 1);
+        if (SceneManager.GetActiveScene().buildIndex > 0)
+        {
+            healthBar.fillAmount = Mathf.Clamp(playerData.playerHealth / playerData.playerMaxHealth, 0, 1);
 
-        if (playerData.blasterID < 0)
-        {
-            ammoCounter.gameObject.SetActive(false);
-        }
-        else
-        {
-            ammoCounter.gameObject.SetActive(true);
-            ammoCounter.text = "Ammo: " + playerData.currentAmmo;
-        }
-
-        if(!playerData.playerArmor)
-        {
-            armorIcon.gameObject.SetActive(false);
-        }
-        else
-        {
-            armorIcon.gameObject.SetActive(true);
-        }
-
-        if(Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (!isPaused)
+            if (playerData.blasterID < 0)
             {
-                pauseMenu.SetActive(true);
-
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-
-                Time.timeScale = 0;
-
-                isPaused = true;
+                ammoCounter.gameObject.SetActive(false);
+            }
+            else
+            {
+                ammoCounter.gameObject.SetActive(true);
+                ammoCounter.text = "Ammo: " + playerData.currentAmmo;
             }
 
+            if (!playerData.playerArmor)
+            {
+                armorIcon.gameObject.SetActive(false);
+            }
             else
-                Resume();
+            {
+                armorIcon.gameObject.SetActive(true);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (!isPaused)
+                {
+                    pauseMenu.SetActive(true);
+
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+
+                    Time.timeScale = 0;
+
+                    isPaused = true;
+                }
+
+                else
+                    Resume();
+            }
         }
     }
 
@@ -93,5 +97,15 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1;
         LoadLevel(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void NewGame()
+    {
+        SceneManager.LoadScene(1);
+    }
+    
+    public void MainMenuButton()
+    {
+        SceneManager.LoadScene(0);
     }
 }

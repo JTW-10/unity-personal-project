@@ -13,8 +13,9 @@ public class EnemyDetection : MonoBehaviour
     public bool isAggro = false;
     public bool playerNear = false;
     public float searchTime = 5;
-    public float detectRadius = 10;
+    public float detectRadius = 20;
     public float turnSpeed = 5;
+    public float reactionTime = 0.75f;
 
     // Start is called before the first frame update
     void Start()
@@ -27,10 +28,20 @@ public class EnemyDetection : MonoBehaviour
     void Update()
     {
         Vector3 playerPosition = player.transform.position - transform.position;
-        float singleStep = turnSpeed * Time.deltaTime;
         Vector3 playerDirection = Vector3.RotateTowards(transform.forward, playerPosition, turnSpeed, 0);
         Debug.DrawRay(transform.position, playerDirection, Color.yellow);
         var distance = Vector3.Distance(transform.position, player.transform.position);
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, playerDirection, out hit, Mathf.Infinity))
+        {
+            if (hit.transform == Player)
+            {
+                basicEnemy.agent.destination = player.transform.position;
+                Debug.Log("detected in line of sight");
+                Debug.DrawRay(transform.position, playerDirection, Color.yellow);
+            }
+        }
 
         if (distance < detectRadius)
         {
@@ -44,21 +55,7 @@ public class EnemyDetection : MonoBehaviour
         if (playerNear)
         {
             transform.rotation = Quaternion.LookRotation(playerDirection);
-
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, playerDirection, out hit, Mathf.Infinity))
-            {
-                if (hit.transform == Player)
-                {
-                    basicEnemy.agent.destination = player.transform.position;
-                    Debug.Log("detected in line of sight");
-                    Debug.DrawRay(transform.position, playerDirection, Color.yellow);
-                }
-            }
-            if (!playerNear)
-            {
-                // probably put some sort of searching thing here
-            }
+            Debug.Log("PlayerFound");
         }
     }
     IEnumerator searchingWindow()
