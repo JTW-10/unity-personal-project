@@ -92,15 +92,6 @@ public class PlayerController : MonoBehaviour
     {
         if(!gm.isPaused)
         {
-            camRotation.x += Input.GetAxisRaw("Mouse X") * mouseSensitivity;
-            camRotation.y += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
-
-
-            camRotation.y = Mathf.Clamp(camRotation.y, -camRotationLimit, camRotationLimit);
-
-            playerCam.transform.localRotation = Quaternion.AngleAxis(camRotation.y, Vector3.left);
-            transform.localRotation = Quaternion.AngleAxis(camRotation.x, Vector3.up);
-
             if (Input.GetMouseButtonDown(0) && swordID >= 0 && !isAimed)
             {
                 Debug.Log("normal swing");
@@ -133,38 +124,8 @@ public class PlayerController : MonoBehaviour
             {
                 isAimed = false;
             }
-            if (isAimed)
-            {
-                playerCam.fieldOfView = 40;
-            }
-            if (!isAimed)
-            {
-                playerCam.fieldOfView = 60;
-            }
 
-            // movement stuff. will probably change due to jank
-            Vector3 temp = myRB.velocity;
-
-            float verticalMove = Input.GetAxisRaw("Vertical");
-            float horizontalMove = Input.GetAxisRaw("Horizontal");
-
-            if (!sprintToggleOption)
-            {
-                if (Input.GetKey(KeyCode.LeftShift))
-                    sprintMode = true;
-
-                if (Input.GetKeyUp(KeyCode.LeftShift))
-                    sprintMode = false;
-            }
-
-            if (sprintToggleOption)
-            {
-                if (Input.GetKey(KeyCode.LeftShift) && verticalMove > 0)
-                    sprintMode = true;
-
-                if (verticalMove <= 0)
-                    sprintMode = false;
-            }
+            // Keeping this as a placeholder just in case I want the movement script to be done in PlayerController rather than PlayerMovement
 
             // janky dodge code. figure out if you're going to keep this or change it to use a lerp or transform.position on monday
             if (Input.GetKeyDown(KeyCode.LeftAlt) && canDodge && !sprintMode && !isParrying)
@@ -194,14 +155,6 @@ public class PlayerController : MonoBehaviour
                 // make sure to have parry animation, preferably with a deflecting animation if you land the parry
             }
 
-            if (!sprintMode)
-                temp.x = verticalMove * speed;
-
-            if (sprintMode)
-                temp.x = verticalMove * speed * sprintMultiplier;
-
-            temp.z = horizontalMove * speed;
-
             if (Physics.Raycast(transform.position, -transform.up, groundDetectDistance)) // fix this since you just float up now
             {
                 isGrounded = true;
@@ -220,19 +173,10 @@ public class PlayerController : MonoBehaviour
             {
                 if (isGrounded || doubleJump < 1)
                 {
-                    temp.y = jumpHeight;
+                    // temp.y = jumpHeight;
                     doubleJump++;
                 }
             }
-
-            myRB.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
-
-            // following stuff is just to recognize input only during dashing state
-            if (Input.GetKeyDown(KeyCode.X) && isDodging)
-            {
-                Debug.Log("dodgeattack");
-            }
-            // delete this later
         }
     }
 
