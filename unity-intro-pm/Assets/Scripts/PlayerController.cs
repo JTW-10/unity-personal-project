@@ -17,24 +17,15 @@ public class PlayerController : MonoBehaviour
     public Transform weaponSlotSword;
     public TrainingDummyController dummy;
     public BasicEnemyController basicEnemy;
+    public PlayerMovement playerMove;
 
     // Player and camera values
 
-    public bool sprintMode = false;         //   having issues with parry not working, something about objects that I can look at tomorrow
-    public bool isGrounded = true;
-
     [Header("Movement Settings")]
-    public float speed = 10f;
-    public float sprintMultiplier = 1.5f;
-    public float jumpHeight = 5f;
-    public float groundDetectDistance = 1.1f;
     public bool canDodge = true;
     public bool isDodging = false;
     public float dodgeCooldown = 3f;
-    public float doubleJump = 0;
     
-      
-
     [Header("User Settings")]
     public float mouseSensitivity = 3f;
     public float Xsensitivity = 3f;
@@ -128,9 +119,9 @@ public class PlayerController : MonoBehaviour
             // Keeping this as a placeholder just in case I want the movement script to be done in PlayerController rather than PlayerMovement
 
             // janky dodge code. figure out if you're going to keep this or change it to use a lerp or transform.position on monday
-            if (Input.GetKeyDown(KeyCode.LeftAlt) && canDodge && !sprintMode && !isParrying)
+            if (Input.GetKeyDown(KeyCode.LeftAlt) && canDodge && !isParrying)
             {
-                speed += 20f;
+                playerMove.speed += 20f;
                 canDodge = false;
                 isDodging = true;
                 canHit = false;
@@ -144,7 +135,7 @@ public class PlayerController : MonoBehaviour
             }
 
             // janky parrying code
-            if (Input.GetKeyDown(KeyCode.C) && !sprintMode && canParry)
+            if (Input.GetKeyDown(KeyCode.C) && canParry)
             {
                 isParrying = true;
                 isAimed = false;
@@ -153,29 +144,6 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine("parryingWindow");
                 StartCoroutine("cooldownParry");
                 // make sure to have parry animation, preferably with a deflecting animation if you land the parry
-            }
-
-            if (Physics.Raycast(transform.position, -transform.up, groundDetectDistance)) // fix this since you just float up now
-            {
-                isGrounded = true;
-            }
-            else
-            {
-                isGrounded = false;
-            }
-
-            if (isGrounded)
-            {
-                doubleJump = 0;
-            }
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                if (isGrounded || doubleJump < 1)
-                {
-                    // temp.y = jumpHeight;
-                    doubleJump++;
-                }
             }
         }
     }
@@ -305,7 +273,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator dodgingReset()
     {
         yield return new WaitForSeconds(0.2f);
-        speed = 10f;
+        playerMove.speed = 10f;
         playerCam.fieldOfView = 60;
         Debug.Log("dodge speed over");
     }
