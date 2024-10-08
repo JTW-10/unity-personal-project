@@ -16,6 +16,8 @@ public class PlayerCamera : MonoBehaviour
 
 
     public CameraStyle currentStyle;
+    public GameObject normalCam;
+    public GameObject aimingCam;
 
     public enum CameraStyle
     {
@@ -56,7 +58,17 @@ public class PlayerCamera : MonoBehaviour
                 lookDirection.forward = aimingDirection.normalized;
 
                 playerObject.forward = aimingDirection.normalized;
-                player.forward = aimingDirection.normalized;
+            }
+
+            if(Input.GetMouseButtonDown(1))
+            {
+                normalCam.SetActive(false);
+                aimingCam.SetActive(true);
+            }
+            if(Input.GetMouseButtonUp(1))
+            {
+                normalCam.SetActive(true);
+                aimingCam.SetActive(false);
             }
         }
     }

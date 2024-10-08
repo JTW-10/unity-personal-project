@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5134125527532399945}
   - component: {fileID: 6023359608098285589}
   - component: {fileID: 4952284128792973014}
+  - component: {fileID: 7261936363373208991}
   m_Layer: 0
   m_Name: BasicEnemy
   m_TagString: enemy
@@ -29,13 +30,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3804328162794754886}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.95, z: -1.56}
+  m_LocalRotation: {x: -0, y: -0.0540249, z: -0, w: 0.99853957}
+  m_LocalPosition: {x: -16.7, y: 0.95, z: 21.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -6.194, z: 0}
 --- !u!33 &5926155178732976350
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -153,3 +154,25 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &7261936363373208991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3804328162794754886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbb0d10cdfb25264389061823358ba09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  basicEnemy: {fileID: 0}
+  player: {fileID: 0}
+  Player: {fileID: 3119577523819630503, guid: d277234c47b06d642be09e77c5c63c4e, type: 3}
+  isAggro: 0
+  playerNear: 0
+  swarmingMode: 0
+  searchTime: 5
+  detectRadius: 20
+  turnSpeed: 5
+  reactionTime: 0.75

@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     public TrainingDummyController dummy;
     public BasicEnemyController basicEnemy;
     public PlayerMovement playerMove;
+    public EnemyDetection enemyAI;
 
     // Player and camera values
 
@@ -76,6 +77,7 @@ public class PlayerController : MonoBehaviour
 
         dummy = GameObject.Find("TrainingDummy").GetComponent<TrainingDummyController>();
         basicEnemy = GameObject.Find("BasicEnemy").GetComponent<BasicEnemyController>();
+        enemyAI = GameObject.Find("BasicEnemy").GetComponent<EnemyDetection>();
     }
 
     // Update is called once per frame
@@ -144,6 +146,12 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine("parryingWindow");
                 StartCoroutine("cooldownParry");
                 // make sure to have parry animation, preferably with a deflecting animation if you land the parry
+            }
+
+            if(Input.GetKeyDown(KeyCode.K))
+            {
+                enemyAI.swarmingMode = true;
+                enemyAI.isAggro = true;
             }
         }
     }

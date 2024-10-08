@@ -12,6 +12,7 @@ public class EnemyDetection : MonoBehaviour
     public Transform Player;
     public bool isAggro = false;
     public bool playerNear = false;
+    public bool swarmingMode = false;
     public float searchTime = 5;
     public float detectRadius = 20;
     public float turnSpeed = 5;
@@ -38,14 +39,20 @@ public class EnemyDetection : MonoBehaviour
             if (hit.transform == Player)
             {
                 basicEnemy.agent.destination = player.transform.position;
+                isAggro = true;
                 Debug.Log("detected in line of sight");
                 Debug.DrawRay(transform.position, playerDirection, Color.yellow);
+            }
+            else
+            {
+                isAggro = false;
             }
         }
 
         if (distance < detectRadius)
         {
             playerNear = true;
+            Debug.Log("PlayerNear");
         }
         else
         {
@@ -55,7 +62,11 @@ public class EnemyDetection : MonoBehaviour
         if (playerNear)
         {
             transform.rotation = Quaternion.LookRotation(playerDirection);
-            Debug.Log("PlayerFound");
+        }
+
+        if(swarmingMode)
+        {
+            detectRadius = 99999;
         }
     }
     IEnumerator searchingWindow()
