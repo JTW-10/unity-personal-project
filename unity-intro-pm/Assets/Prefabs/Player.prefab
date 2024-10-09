@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 4719859597114884651}
   - component: {fileID: 6270668970700583431}
   - component: {fileID: 6131032478111308829}
+  - component: {fileID: 2101769838586500462}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -138,6 +139,7 @@ MonoBehaviour:
   dummy: {fileID: 0}
   basicEnemy: {fileID: 0}
   playerMove: {fileID: 0}
+  enemyAI: {fileID: 0}
   canDodge: 1
   isDodging: 0
   dodgeCooldown: 3
@@ -196,6 +198,50 @@ MonoBehaviour:
   jumpHeight: 5
   airMultiplier: 0
   isGrounded: 1
+--- !u!23 &2101769838586500462
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 388749915526410814}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 41d351b12aaef584d841015d63153d42, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &4349421424046797832
 GameObject:
   m_ObjectHideFlags: 0
@@ -403,8 +449,8 @@ Transform:
   m_GameObject: {fileID: 8784826182917308439}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0009999275, y: 0.67400026, z: 0.73600006}
-  m_LocalScale: {x: 0.39664, y: 0.39366, z: 1}
+  m_LocalPosition: {x: -0, y: 0.67, z: 0.36}
+  m_LocalScale: {x: 0.5882947, y: 0.39366, z: 0.33215}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3119577523819630503}
@@ -439,7 +485,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c8e82a25f24409745877de6612d96fac, type: 2}
+  - {fileID: 2100000, guid: 4d0e1999fb6b0164a9282c642812000e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

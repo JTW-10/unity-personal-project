@@ -14,7 +14,7 @@ public class EnemyDetection : MonoBehaviour
     public bool playerNear = false;
     public bool swarmingMode = false;
     public float searchTime = 5;
-    public float detectRadius = 20;
+    public float detectRadius = 5;
     public float turnSpeed = 5;
     public float reactionTime = 0.75f;
 
