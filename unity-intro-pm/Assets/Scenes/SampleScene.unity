@@ -953,10 +953,17 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 0}
   m_Lens:
+<<<<<<< HEAD
     FieldOfView: 50
     OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 5000
+=======
+    FieldOfView: 59.55
+    OrthographicSize: 5
+    NearClipPlane: 0.3
+    FarClipPlane: 1000
+>>>>>>> parent of 12524e1 (added weird model sort of thing with weird texture)
     Dutch: 0
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
@@ -3111,6 +3118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   m_ExcludedPropertiesInInspector:
   - m_Script
   - Header
@@ -3161,6 +3169,30 @@ Transform:
   - {fileID: 2062987290}
   m_Father: {fileID: 633890712}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+=======
+  m_ShowDebugText: 0
+  m_ShowCameraFrustum: 1
+  m_IgnoreTimeScale: 0
+  m_WorldUpOverride: {fileID: 0}
+  m_UpdateMethod: 2
+  m_BlendUpdateMethod: 1
+  m_DefaultBlend:
+    m_Style: 1
+    m_Time: 2
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  m_CustomBlends: {fileID: 0}
+  m_CameraCutEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_CameraActivatedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+>>>>>>> parent of 12524e1 (added weird model sort of thing with weird texture)
 --- !u!1 &1457465188
 GameObject:
   m_ObjectHideFlags: 0
@@ -5441,9 +5473,15 @@ Camera:
     y: 0
     width: 1
     height: 1
+<<<<<<< HEAD
   near clip plane: 0.1
   far clip plane: 5000
   field of view: 50
+=======
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 59.55
+>>>>>>> parent of 12524e1 (added weird model sort of thing with weird texture)
   orthographic: 0
   orthographic size: 10
   m_Depth: -1
@@ -5712,8 +5750,12 @@ SceneRoots:
   - {fileID: 1032592338}
   - {fileID: 3644916381500773278}
   - {fileID: 950903881}
+<<<<<<< HEAD
   - {fileID: 1858378755}
   - {fileID: 633890712}
   - {fileID: 1857275770}
   - {fileID: 1801252391}
   - {fileID: 1555076994}
+=======
+  - {fileID: 450247441}
+>>>>>>> parent of 12524e1 (added weird model sort of thing with weird texture)
