@@ -147,12 +147,6 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine("cooldownParry");
                 // make sure to have parry animation, preferably with a deflecting animation if you land the parry
             }
-
-            if(Input.GetKeyDown(KeyCode.K))
-            {
-                enemyAI.swarmingMode = true;
-                enemyAI.isAggro = true;
-            }
         }
     }
 

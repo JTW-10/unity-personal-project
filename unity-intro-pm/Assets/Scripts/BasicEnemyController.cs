@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class BasicEnemyController : MonoBehaviour
 {
     public PlayerController player;
+    public EnemyDetection enemyDetection;
     public NavMeshAgent agent;
 
     [Header("Basic Enemy Settings")]
@@ -25,16 +26,26 @@ public class BasicEnemyController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        //agent.destination = player.transform.position; // find way to check area for player.
-                                                       // if found, shoot raycast at direction of player to check for obstacle blocking vision
-                                                       // if raycast hits player, make the agent destination the player for a limited amount of time
-                                                       // once time is up, repeat
-                                                       // possibly make enemy roam and look around for player although I have no clue how to do this
-
+    { 
         if (health <= 0)
         {
             Destroy(gameObject);
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            enemyDetection.swarmingMode = true;
+        }
+
+        if (enemyDetection.isAggro)
+        {
+            agent.destination = player.transform.position;
+        }
+
+        if (enemyDetection.swarmingMode)
+        {
+            enemyDetection.detectRadius = 9999;
+            enemyDetection.isAggro = true;
         }
     }
 
@@ -45,14 +56,7 @@ public class BasicEnemyController : MonoBehaviour
             Destroy(other.gameObject);
             health -= player.weaponDamage;
             Debug.Log("enemy has taken damage");
-        }
-    }
-    private void detectionRadius(Vector3 center, float radius) // try to figure out how this actually works
-    {
-        Collider[] hitColliders = Physics.OverlapSphere(center, radius);
-        foreach (var hitcollider in hitColliders)
-        {
-            hitcollider.SendMessage("AddDamage");
+            enemyDetection.swarmingMode = true;
         }
     }
 }

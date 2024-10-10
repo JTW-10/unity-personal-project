@@ -7,22 +7,18 @@ using UnityEngine.AI;
 
 public class EnemyDetection : MonoBehaviour
 {
-    public BasicEnemyController basicEnemy;
     public PlayerController player;
     public Transform Player;
     public bool isAggro = false;
     public bool playerNear = false;
     public bool swarmingMode = false;
-    public float searchTime = 5;
     public float detectRadius = 5;
     public float turnSpeed = 5;
-    public float reactionTime = 0.75f;
 
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.Find("Player").GetComponent<PlayerController>();
-        basicEnemy = GameObject.Find("BasicEnemy").GetComponent<BasicEnemyController>();
     }
 
     // Update is called once per frame
@@ -33,22 +29,23 @@ public class EnemyDetection : MonoBehaviour
         Debug.DrawRay(transform.position, playerDirection, Color.yellow);
         var distance = Vector3.Distance(transform.position, player.transform.position);
 
+        // if raycast hits the player, turn aggro on
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, playerDirection, out hit, Mathf.Infinity))
+        if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity))
         {
             if (hit.transform == Player)
             {
-                basicEnemy.agent.destination = player.transform.position;
                 isAggro = true;
                 Debug.Log("detected in line of sight");
-                Debug.DrawRay(transform.position, playerDirection, Color.yellow);
+                Debug.DrawRay(transform.position, transform.forward, Color.yellow);
             }
             else
             {
                 isAggro = false;
             }
         }
-
+                                                                              
+        // checks if player is near using distance check
         if (distance < detectRadius)
         {
             playerNear = true;
@@ -59,19 +56,10 @@ public class EnemyDetection : MonoBehaviour
             playerNear = false;
         }
 
+        // if player is near, rotate enemy towards player
         if (playerNear)
         {
             transform.rotation = Quaternion.LookRotation(playerDirection);
         }
-
-        if(swarmingMode)
-        {
-            detectRadius = 99999;
-        }
-    }
-    IEnumerator searchingWindow()
-    {
-        yield return new WaitForSeconds(searchTime);
-        basicEnemy.agent.ResetPath();
     }
 }
