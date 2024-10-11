@@ -30,6 +30,7 @@ public class BasicEnemyController : MonoBehaviour
         if (health <= 0)
         {
             Destroy(gameObject);
+            enemyDetection.isAlive = false;
         }
 
         if (Input.GetKeyDown(KeyCode.K))
@@ -55,7 +56,19 @@ public class BasicEnemyController : MonoBehaviour
         {
             Destroy(other.gameObject);
             health -= player.weaponDamage;
-            Debug.Log("enemy has taken damage");
+            Debug.Log("enemy has taken blaster damage");
+            enemyDetection.isAggro = true;
+
+            if(enemyDetection.isAggro)
+            {
+                enemyDetection.swarmingMode = true;
+            }
+        }
+
+        if (other.gameObject.tag == "Swing")
+        {
+            health -= player.meleeDamage;
+            Debug.Log("enemy has taken melee damage");
             enemyDetection.swarmingMode = true;
         }
     }

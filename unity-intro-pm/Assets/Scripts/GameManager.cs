@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
 
     public GameObject pauseMenu;
     public GameObject mainHUD;
+    public GameObject baseMainMenu;
+    public GameObject optionsMenu;
     public PlayerController playerData;
 
     public Image healthBar;
@@ -68,6 +70,11 @@ public class GameManager : MonoBehaviour
                     Resume();
             }
         }
+
+        if(SceneManager.GetActiveScene().buildIndex < 0)
+        {
+            // placeholder, might need this for later, got no clue
+        }
     }
 
     public void Resume()
@@ -102,10 +109,29 @@ public class GameManager : MonoBehaviour
     public void NewGame()
     {
         SceneManager.LoadScene(1);
+
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = false;
+
+        Time.timeScale = 1;
+
+        isPaused = false;
     }
     
     public void MainMenuButton()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void OptionsButtonMainMenu()
+    {
+        baseMainMenu.SetActive(false);
+        optionsMenu.SetActive(true);
+    }
+
+    public void LoadMenuFromOptions()
+    {
+        optionsMenu.SetActive(false);
+        baseMainMenu.SetActive(true);
     }
 }

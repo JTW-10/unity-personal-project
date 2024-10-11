@@ -10,6 +10,7 @@ TagManager:
   - weaponBlaster
   - Shot
   - enemy
+  - Swing
   layers:
   - Default
   - TransparentFX

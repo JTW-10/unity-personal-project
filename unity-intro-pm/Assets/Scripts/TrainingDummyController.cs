@@ -42,6 +42,12 @@ public class TrainingDummyController : MonoBehaviour
             health -= player.weaponDamage;
             Debug.Log("enemy has taken damage");
         }
+
+        if (other.gameObject.tag == "Swing")
+        {
+            health -= player.meleeDamage;
+            Debug.Log("enemy has taken melee damage");
+        }
     }
 
     private void OnCollisionEnter(Collision collision)

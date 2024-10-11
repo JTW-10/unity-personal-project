@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
 
     public Transform weaponSlotBlaster;
     public Transform weaponSlotSword;
+    public GameObject swingHitbox;
     public TrainingDummyController dummy;
     public BasicEnemyController basicEnemy;
     public PlayerMovement playerMove;
@@ -40,8 +41,6 @@ public class PlayerController : MonoBehaviour
     public float pickupHealth = 25f;
     public float hitCooldown = 2f;
     public float armorCooldown = 10f;
-    public float dodgeWindow = 0.5f;
-    public float parryWindow = 1f;
     public bool canHit = true;
     public bool canParry = true;
     public bool playerArmor = true;
@@ -60,9 +59,17 @@ public class PlayerController : MonoBehaviour
     public bool canFire = true;
     public bool isAimed = false;
 
-    [Header("Sword Weapon Stats")]
-    public int swordID = -1;
+    [Header("Melee Weapon Stats")]
+    public int meleeID = -1;
+    public float swingSpeed = 0f;
+    public float meleeDamage = 0f;
+    public float parryWindow = 1f;
+    public float dodgeWindow = 0.5f;
     public float stunDuration = 1f;
+    //stuff outside of base stats I think, separating regardless
+    public bool canSwing = true;
+    public float comboWindow = 1f;
+    public float comboCounter = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -85,14 +92,14 @@ public class PlayerController : MonoBehaviour
     {
         if(!gm.isPaused)
         {
-            if (Input.GetMouseButtonDown(0) && swordID >= 0 && !isAimed)
+            if (Input.GetMouseButtonDown(0) && meleeID >= 0 && !isAimed && canSwing && comboCounter == 0)
             {
-                Debug.Log("normal swing");
-
-                if (isDodging)
-                {
-                    Debug.Log("dodge swing");
-                }
+                Debug.Log("First swing");
+                swingHitbox.SetActive(true);
+                canSwing = false;
+                StartCoroutine("cooldownSwing"); //need to tie combo counter to the weapon in order to track which swing you are on properly
+                comboCounter++;
+                StartCoroutine("comboEnd");
             }
 
             // firing code
@@ -123,7 +130,7 @@ public class PlayerController : MonoBehaviour
             // janky dodge code. figure out if you're going to keep this or change it to use a lerp or transform.position on monday
             if (Input.GetKeyDown(KeyCode.LeftAlt) && canDodge && !isParrying)
             {
-                playerMove.speed += 20f;
+                playerMove.speed += 14f;
                 canDodge = false;
                 isDodging = true;
                 canHit = false;
@@ -240,7 +247,32 @@ public class PlayerController : MonoBehaviour
                     break;
             }
         }
+
+        if (other.gameObject.tag == "weaponSword")
+        {
+            other.gameObject.transform.SetPositionAndRotation(weaponSlotSword.position, weaponSlotSword.rotation);
+
+            other.gameObject.transform.SetParent(weaponSlotSword);
+
+            switch(other.gameObject.name)
+            {
+                case "weaponSword0":
+                    meleeID = 0;
+                    swingSpeed = 0.2f;
+                    meleeDamage = 25f;
+                    parryWindow = 1f;
+                    dodgeWindow = 0.5f;
+                    stunDuration = 1f;
+                    break;
+
+
+                default:
+                    break;
+            }
+        }
     }
+
+
 
     private void cooldown(bool condition, float timeLimit)
     {
@@ -275,7 +307,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator dodgingReset()
     {
         yield return new WaitForSeconds(0.2f);
-        playerMove.speed = 10f;
+        playerMove.speed = 7f;
         playerCam.fieldOfView = 60;
         Debug.Log("dodge speed over");
     }
@@ -312,5 +344,18 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         Time.timeScale = 1;
+    }
+
+    IEnumerator cooldownSwing()
+    {
+        yield return new WaitForSeconds(swingSpeed);
+        swingHitbox.SetActive(false);
+        canSwing = true;
+    }
+    
+    IEnumerator comboEnd()
+    {
+        yield return new WaitForSeconds(comboWindow);
+        comboCounter = 0;
     }
 }
