@@ -14,8 +14,14 @@ public class BasicEnemyController : MonoBehaviour
     public float maxHealth = 100;
     public float damageGiven = 10;
     public float stunWindow = 1;
-    public float knockback = 10;
     public bool isStunned = false;
+
+    [Header("Knockback Settings")]
+    public float knockbackDuration;
+    public float knockbackStrength;
+    public float knockbackTimer;
+    //placeholder
+    public bool beingKnockedback = false;
 
     // Start is called before the first frame update
     void Start()
@@ -70,7 +76,13 @@ public class BasicEnemyController : MonoBehaviour
             health -= player.meleeDamage;
             Debug.Log("enemy has taken melee damage");
             enemyDetection.swarmingMode = true;
+            
         }
+    }
+
+    public void knockback()
+    {
+        Vector3 knockbackDirection = transform.position - player.transform.position.normalized;
     }
 }
 

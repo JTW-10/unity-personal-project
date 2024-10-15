@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     public Image healthBar;
     public Image armorIcon;
+    public TextMeshProUGUI comboCounter;
     public TextMeshProUGUI ammoCounter;
 
     // Start is called before the first frame update
@@ -41,6 +42,16 @@ public class GameManager : MonoBehaviour
             {
                 ammoCounter.gameObject.SetActive(true);
                 ammoCounter.text = "Ammo: " + playerData.currentAmmo;
+            }
+
+            if (playerData.meleeID < 0)
+            {
+                comboCounter.gameObject.SetActive(false);
+            }
+            else
+            {
+                comboCounter.gameObject.SetActive(true);
+                comboCounter.text = "Combo: " + playerData.comboCounter;
             }
 
             if (!playerData.playerArmor)

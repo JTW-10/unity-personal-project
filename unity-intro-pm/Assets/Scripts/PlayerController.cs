@@ -68,8 +68,12 @@ public class PlayerController : MonoBehaviour
     public float stunDuration = 1f;
     //stuff outside of base stats I think, separating regardless
     public bool canSwing = true;
+    public bool comboSwing = false;
     public float comboWindow = 1f;
     public float comboCounter = 0;
+
+    [Header("misc stats")]
+    public float placeholder;
 
     // Start is called before the first frame update
     void Start()
@@ -92,14 +96,39 @@ public class PlayerController : MonoBehaviour
     {
         if(!gm.isPaused)
         {
-            if (Input.GetMouseButtonDown(0) && meleeID >= 0 && !isAimed && canSwing && comboCounter == 0)
+            //swinging code
+            if (Input.GetMouseButtonDown(0) && meleeID >= 0 && !isAimed && canSwing)
             {
-                Debug.Log("First swing");
-                swingHitbox.SetActive(true);
-                canSwing = false;
-                StartCoroutine("cooldownSwing"); //need to tie combo counter to the weapon in order to track which swing you are on properly
-                comboCounter++;
-                StartCoroutine("comboEnd");
+                if (comboCounter == 0)
+                {
+                    Debug.Log("swing");
+                    swingHitbox.SetActive(true);
+                    canSwing = false;
+                    StartCoroutine("cooldownSwing");
+                    comboCounter++;
+                    StartCoroutine("comboEnd");
+                }
+
+                else if(comboCounter == 1)
+                {
+                    StopCoroutine("comboEnd");
+                    Debug.Log("second swing");
+                    swingHitbox.SetActive(true);
+                    canSwing = false;
+                    StartCoroutine("cooldownSwing");
+                    comboCounter++;
+                    StartCoroutine("comboEnd");
+                }
+
+                else if(comboCounter == 2)
+                {
+                    StopCoroutine("comboEnd");
+                    Debug.Log("final swing");
+                    swingHitbox.SetActive(true);
+                    comboCounter++;
+                    canSwing = false;
+                    StartCoroutine("cooldownThirdSwing");
+                }
             }
 
             // firing code
@@ -153,6 +182,16 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine("parryingWindow");
                 StartCoroutine("cooldownParry");
                 // make sure to have parry animation, preferably with a deflecting animation if you land the parry
+            }
+
+            // Temporary Debug Keys
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                Time.timeScale = 0.5f;
+            }
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                Time.timeScale = 1f;
             }
         }
     }
@@ -263,6 +302,8 @@ public class PlayerController : MonoBehaviour
                     parryWindow = 1f;
                     dodgeWindow = 0.5f;
                     stunDuration = 1f;
+                    comboWindow = 1f;
+                    comboCounter = 0;
                     break;
 
 
@@ -353,6 +394,14 @@ public class PlayerController : MonoBehaviour
         canSwing = true;
     }
     
+    IEnumerator cooldownThirdSwing()
+    {
+        yield return new WaitForSeconds(swingSpeed + 0.3f);
+        swingHitbox.SetActive(false);
+        canSwing = true;
+        comboCounter = 0;
+    }
+
     IEnumerator comboEnd()
     {
         yield return new WaitForSeconds(comboWindow);
