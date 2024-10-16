@@ -18,10 +18,6 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()  // for some reason using this code in this script rather than the enemy script makes them stalk you?
     {
-        if(Input.GetKeyDown(KeyCode.K))
-        {
-            enemyDetection.swarmingMode = true;
-        }
 
         if(enemyDetection.isAggro)
         {

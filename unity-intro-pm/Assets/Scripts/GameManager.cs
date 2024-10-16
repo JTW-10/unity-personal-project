@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public GameObject baseMainMenu;
     public GameObject optionsMenu;
     public PlayerController playerData;
+    public CheatCodes cheatData;
 
     public Image healthBar;
     public Image armorIcon;
@@ -24,7 +25,9 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         if (SceneManager.GetActiveScene().buildIndex > 0)
+        {
             playerData = GameObject.Find("Player").GetComponent<PlayerController>();
+        }
     }
 
     // Update is called once per frame
@@ -82,7 +85,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if(SceneManager.GetActiveScene().buildIndex < 0)
+        if (SceneManager.GetActiveScene().buildIndex < 0)
         {
             // placeholder, might need this for later, got no clue
         }

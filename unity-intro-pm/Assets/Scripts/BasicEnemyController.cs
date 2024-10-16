@@ -33,15 +33,16 @@ public class BasicEnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     { 
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            enemyDetection.swarmingMode = true;
+        }
+
+
         if (health <= 0)
         {
             Destroy(gameObject);
             enemyDetection.isAlive = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            enemyDetection.swarmingMode = true;
         }
 
         if (enemyDetection.isAggro)
@@ -53,6 +54,7 @@ public class BasicEnemyController : MonoBehaviour
         {
             enemyDetection.detectRadius = 9999;
             enemyDetection.isAggro = true;
+            agent.destination = player.transform.position;
         }
     }
 

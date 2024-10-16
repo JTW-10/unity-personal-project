@@ -122,7 +122,6 @@ GameObject:
   - component: {fileID: 6023359608098285589}
   - component: {fileID: 4952284128792973014}
   - component: {fileID: 7261936363373208991}
-  - component: {fileID: 712561987009934390}
   m_Layer: 0
   m_Name: BasicEnemy
   m_TagString: enemy
@@ -241,8 +240,11 @@ MonoBehaviour:
   maxHealth: 100
   damageGiven: 10
   stunWindow: 1
-  knockback: 10
   isStunned: 0
+  knockbackDuration: 0
+  knockbackStrength: 0
+  knockbackTimer: 0
+  beingKnockedback: 0
 --- !u!195 &4952284128792973014
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -282,23 +284,9 @@ MonoBehaviour:
   isAggro: 0
   playerNear: 0
   swarmingMode: 0
+  isAlive: 1
   detectRadius: 10
   turnSpeed: 5
---- !u!114 &712561987009934390
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3804328162794754886}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c1f5667559b2c544bee9e27aec32dc1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemyDetection: {fileID: 7261936363373208991}
-  player: {fileID: 3119577523819630503, guid: d277234c47b06d642be09e77c5c63c4e, type: 3}
-  agent: {fileID: 4952284128792973014}
 --- !u!1 &7691553870072535820
 GameObject:
   m_ObjectHideFlags: 0

@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 6270668970700583431}
   - component: {fileID: 6131032478111308829}
   - component: {fileID: 2101769838586500462}
+  - component: {fileID: 1457596147904036916}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -177,7 +178,10 @@ MonoBehaviour:
   dodgeWindow: 0.5
   stunDuration: 1
   canSwing: 1
+  comboSwing: 0
+  comboWindow: 1
   comboCounter: 0
+  placeholder: 0
 --- !u!114 &6131032478111308829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248,6 +252,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1457596147904036916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 388749915526410814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3553f588f551344687074456c0d8e1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyDetection: {fileID: 7261936363373208991, guid: bb809c97809247d48bac0ea9f934798a, type: 3}
+  thebeasthungers: 0
 --- !u!1 &1891861250807706738
 GameObject:
   m_ObjectHideFlags: 0
