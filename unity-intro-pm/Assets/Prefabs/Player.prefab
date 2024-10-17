@@ -72,6 +72,7 @@ Transform:
   - {fileID: 4804719465454650661}
   - {fileID: 3133234572546009369}
   - {fileID: 4102366793101307123}
+  - {fileID: 8589884300637411300}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &7037060502543899895
@@ -265,6 +266,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyDetection: {fileID: 7261936363373208991, guid: bb809c97809247d48bac0ea9f934798a, type: 3}
+  gm: {fileID: 0}
+  thebeast: {fileID: 0}
   thebeasthungers: 0
 --- !u!1 &1891861250807706738
 GameObject:
@@ -373,6 +376,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1891861250807706738}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &3807711192388243813
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8589884300637411300}
+  m_Layer: 0
+  m_Name: Camera Holder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8589884300637411300
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3807711192388243813}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000062584905, y: -0.0000000031004677, z: 8.003554e-11, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3119577523819630503}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4349421424046797832
 GameObject:
   m_ObjectHideFlags: 0

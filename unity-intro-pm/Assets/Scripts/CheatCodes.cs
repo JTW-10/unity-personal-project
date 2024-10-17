@@ -2,12 +2,16 @@ using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class CheatCodes : MonoBehaviour
 {
     public EnemyDetection enemyDetection;
+    public GameManager gm;
+    public Transform player;
     public GameObject thebeast;
+    public GameObject beastText;
     public bool thebeasthungers = false;
     // Start is called before the first frame update
     void Start()
@@ -18,17 +22,25 @@ public class CheatCodes : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        if(!gm.isPaused)
         {
-            if (!thebeasthungers)
+            if (gm.debugKeys)
             {
-                thebeasthungers = true;
-                thebeast.gameObject.SetActive(true);
-            }
-            else
-            {
-                thebeasthungers = false;
-                thebeast.gameObject.SetActive(false);
+                if (Input.GetKeyDown(KeyCode.L))
+                {
+                    if (!thebeasthungers)
+                    {
+                        thebeasthungers = true;
+                        thebeast.gameObject.SetActive(true);
+                        beastText.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        thebeasthungers = false;
+                        thebeast.gameObject.SetActive(false);
+                        beastText.gameObject.SetActive(false);
+                    }
+                }
             }
         }
     }

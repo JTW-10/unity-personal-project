@@ -302,7 +302,7 @@ public class PlayerController : MonoBehaviour
                     parryWindow = 1f;
                     dodgeWindow = 0.5f;
                     stunDuration = 1f;
-                    comboWindow = 1f;
+                    comboWindow = 0.75f;
                     comboCounter = 0;
                     break;
 

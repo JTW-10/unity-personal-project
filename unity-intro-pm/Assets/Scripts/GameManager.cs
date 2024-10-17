@@ -8,6 +8,7 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     public bool isPaused = false;
+    public bool debugKeys = false;
 
     public GameObject pauseMenu;
     public GameObject mainHUD;
@@ -94,6 +95,7 @@ public class GameManager : MonoBehaviour
     public void Resume()
     {
         pauseMenu.SetActive(false);
+        optionsMenu.SetActive(false);
 
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
@@ -137,15 +139,27 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void OptionsButtonMainMenu()
+    public void OptionsButton()
     {
-        baseMainMenu.SetActive(false);
+        pauseMenu.SetActive(false);
         optionsMenu.SetActive(true);
     }
 
-    public void LoadMenuFromOptions()
+    public void GoBackFromOptions()
     {
         optionsMenu.SetActive(false);
-        baseMainMenu.SetActive(true);
+        pauseMenu.SetActive(true);
+    }
+
+    public void DebugKeysToggle(bool debugKeyToggle)
+    {
+       if(debugKeyToggle)
+        {
+            debugKeys = true;
+        }
+       else
+        {
+            debugKeys = false;
+        }
     }
 }
