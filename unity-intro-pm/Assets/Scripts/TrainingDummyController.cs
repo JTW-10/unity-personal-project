@@ -36,17 +36,25 @@ public class TrainingDummyController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Vector3 knockbackDirection = transform.position - player.transform.position.normalized;
+
         if (other.gameObject.tag == "Shot")
         {
             Destroy(other.gameObject);
             health -= player.weaponDamage;
-            Debug.Log("enemy has taken damage");
+            Debug.Log("enemy has taken blaster damage");
         }
 
         if (other.gameObject.tag == "Swing")
         {
-            health -= player.meleeDamage;
-            Debug.Log("enemy has taken melee damage");
+            if (player.comboCounter > 2)
+            {
+                Debug.Log("final attack");
+            }
+            else
+            { 
+                Debug.Log("regular attack");
+            }
         }
     }
 

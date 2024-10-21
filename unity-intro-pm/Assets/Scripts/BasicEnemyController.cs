@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,6 +9,7 @@ public class BasicEnemyController : MonoBehaviour
     public PlayerController player;
     public EnemyDetection enemyDetection;
     public NavMeshAgent agent;
+    public Rigidbody rb;
 
     [Header("Basic Enemy Settings")]
     public float health = 100;
@@ -17,11 +19,7 @@ public class BasicEnemyController : MonoBehaviour
     public bool isStunned = false;
 
     [Header("Knockback Settings")]
-    public float knockbackDuration;
-    public float knockbackStrength;
-    public float knockbackTimer;
-    //placeholder
-    public bool beingKnockedback = false;
+    public bool placeholder = false;
 
     // Start is called before the first frame update
     void Start()
@@ -32,7 +30,7 @@ public class BasicEnemyController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    { 
+    {
         if (Input.GetKeyDown(KeyCode.K))
         {
             enemyDetection.swarmingMode = true;
@@ -42,7 +40,6 @@ public class BasicEnemyController : MonoBehaviour
         if (health <= 0)
         {
             Destroy(gameObject);
-            enemyDetection.isAlive = false;
         }
 
         if (enemyDetection.isAggro)
@@ -75,16 +72,32 @@ public class BasicEnemyController : MonoBehaviour
 
         if (other.gameObject.tag == "Swing")
         {
-            health -= player.meleeDamage;
-            Debug.Log("enemy has taken melee damage");
-            enemyDetection.swarmingMode = true;
-            
+            Vector3 knockbackDirection = other.transform.position - transform.position;
+            knockbackDirection.y = 0;
+
+            if (player.comboCounter > 2)
+            {
+                health -= player.meleeDamage;
+                Debug.Log("final attack");
+                enemyDetection.swarmingMode = true;
+                player.knockbackForce = player.knockbackForce * 0.5f;
+                rb.AddForce(knockbackDirection.normalized * player.knockbackForce, ForceMode.Impulse);
+                StartCoroutine("knockbackReset");
+            }
+            else
+            {
+                health -= player.meleeDamage;
+                Debug.Log("regular attack");
+                enemyDetection.swarmingMode = true;
+                rb.AddForce(knockbackDirection.normalized * player.knockbackForce, ForceMode.Impulse);
+            }
         }
     }
 
-    public void knockback()
+    IEnumerator knockbackReset()
     {
-        Vector3 knockbackDirection = transform.position - player.transform.position.normalized;
+        yield return new WaitForSeconds(0.25f);
+        player.knockbackForce = player.knockbackForce / 0.5f;
     }
 }
 

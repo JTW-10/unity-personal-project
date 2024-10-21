@@ -62,7 +62,7 @@ Transform:
   m_GameObject: {fileID: 388749915526410814}
   serializedVersion: 2
   m_LocalRotation: {x: -0.00000062584905, y: 0.0000000031004677, z: -8.003554e-11, w: 1}
-  m_LocalPosition: {x: -7.29, y: 2.98896, z: -8.92}
+  m_LocalPosition: {x: -44.04, y: 2.98896, z: -8.92}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -123,7 +123,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 112
+  m_Constraints: 0
   m_CollisionDetection: 1
 --- !u!114 &6270668970700583431
 MonoBehaviour:
@@ -139,10 +139,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponSlotBlaster: {fileID: 4804719465454650661}
   weaponSlotSword: {fileID: 2313040508736306078}
-  swingHitbox: {fileID: 0}
+  swingHitbox: {fileID: 1891861250807706738}
   dummy: {fileID: 0}
   basicEnemy: {fileID: 0}
-  playerMove: {fileID: 0}
+  playerMove: {fileID: 6131032478111308829}
   enemyAI: {fileID: 0}
   canDodge: 1
   isDodging: 0
@@ -178,6 +178,7 @@ MonoBehaviour:
   parryWindow: 1
   dodgeWindow: 0.5
   stunDuration: 1
+  knockbackForce: 0.2
   canSwing: 1
   comboSwing: 0
   comboWindow: 1
@@ -199,15 +200,15 @@ MonoBehaviour:
   playerObject: {fileID: 5773777642687414209}
   lookDirection: {fileID: 3133234572546009369}
   myRB: {fileID: 4719859597114884651}
-  playerHeight: 0
-  groundDrag: 0
+  playerHeight: 2
+  groundDrag: 7
   doubleJump: 0
   isGround:
     serializedVersion: 2
-    m_Bits: 0
-  speed: 10
-  jumpHeight: 5
-  airMultiplier: 0
+    m_Bits: 128
+  speed: 7
+  jumpHeight: 6
+  airMultiplier: 0.4
   isGrounded: 1
 --- !u!23 &2101769838586500462
 MeshRenderer:
@@ -267,7 +268,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyDetection: {fileID: 7261936363373208991, guid: bb809c97809247d48bac0ea9f934798a, type: 3}
   gm: {fileID: 0}
+  player: {fileID: 3119577523819630503}
   thebeast: {fileID: 0}
+  beastText: {fileID: 0}
   thebeasthungers: 0
 --- !u!1 &1891861250807706738
 GameObject:

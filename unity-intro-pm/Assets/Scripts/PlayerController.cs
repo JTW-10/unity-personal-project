@@ -66,6 +66,7 @@ public class PlayerController : MonoBehaviour
     public float parryWindow = 1f;
     public float dodgeWindow = 0.5f;
     public float stunDuration = 1f;
+    public float knockbackForce = 0.2f;
     //stuff outside of base stats I think, separating regardless
     public bool canSwing = true;
     public bool comboSwing = false;
@@ -101,7 +102,6 @@ public class PlayerController : MonoBehaviour
             {
                 if (comboCounter == 0)
                 {
-                    Debug.Log("swing");
                     swingHitbox.SetActive(true);
                     canSwing = false;
                     StartCoroutine("cooldownSwing");
@@ -112,7 +112,6 @@ public class PlayerController : MonoBehaviour
                 else if(comboCounter == 1)
                 {
                     StopCoroutine("comboEnd");
-                    Debug.Log("second swing");
                     swingHitbox.SetActive(true);
                     canSwing = false;
                     StartCoroutine("cooldownSwing");
@@ -123,7 +122,6 @@ public class PlayerController : MonoBehaviour
                 else if(comboCounter == 2)
                 {
                     StopCoroutine("comboEnd");
-                    Debug.Log("final swing");
                     swingHitbox.SetActive(true);
                     comboCounter++;
                     canSwing = false;
@@ -301,9 +299,10 @@ public class PlayerController : MonoBehaviour
                     meleeDamage = 25f;
                     parryWindow = 1f;
                     dodgeWindow = 0.5f;
-                    stunDuration = 1f;
+                    stunDuration = 0.5f;
                     comboWindow = 0.75f;
                     comboCounter = 0;
+                    knockbackForce = 2f;
                     break;
 
 
