@@ -41,6 +41,15 @@ public class CheatCodes : MonoBehaviour
                         beastText.gameObject.SetActive(false);
                     }
                 }
+
+                if (Input.GetKeyDown(KeyCode.O))
+                {
+                    Time.timeScale = 0.5f;
+                }
+                if (Input.GetKeyDown(KeyCode.P))
+                {
+                    Time.timeScale = 1f;
+                }
             }
         }
     }

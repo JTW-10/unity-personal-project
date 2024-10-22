@@ -14,11 +14,6 @@ public class PlayerCamera : MonoBehaviour
                                     // main issue at the moment is that the player object is not looking in same direction as aiming camera and functions more like the normal cam
     public float rotationSpeed;
 
-
-    public CameraStyle currentStyle;
-    public GameObject normalCam;
-    public GameObject aimingCam;
-
     public enum CameraStyle
     {
         Normal,
@@ -34,41 +29,19 @@ public class PlayerCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!gm.isPaused)
+        if(!gm.isPaused)
         {
             Vector3 viewDirection = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
             lookDirection.forward = viewDirection.normalized;
 
-            if(currentStyle == CameraStyle.Normal)
-            {
-                float verticalMove = Input.GetAxisRaw("Vertical");
-                float horizontalMove = Input.GetAxisRaw("Horizontal");
-                Vector3 inputDirection = lookDirection.forward * verticalMove + lookDirection.right * horizontalMove;
+            float verticalMove = Input.GetAxisRaw("Vertical");
+            float horizontalMove = Input.GetAxisRaw("Horizontal");
+            Vector3 inputDirection = lookDirection.forward * verticalMove + lookDirection.right * horizontalMove;
 
-                if (inputDirection != Vector3.zero)
-                {
-                    playerObject.forward = Vector3.Slerp(playerObject.forward, inputDirection.normalized, Time.deltaTime * rotationSpeed);
-                    player.forward = Vector3.Slerp(player.forward, inputDirection.normalized, Time.deltaTime * rotationSpeed);
-                }
-            }
-
-            else if(currentStyle == CameraStyle.Aiming)
+            if(inputDirection != Vector3.zero)
             {
-                Vector3 aimingDirection = aimingLookAt.position - new Vector3(transform.position.x, aimingLookAt.position.y, transform.position.z);
-                lookDirection.forward = aimingDirection.normalized;
-
-                playerObject.forward = aimingDirection.normalized;
-            }
-
-            if(Input.GetMouseButtonDown(1))
-            {
-                normalCam.SetActive(false);
-                aimingCam.SetActive(true);
-            }
-            if(Input.GetMouseButtonUp(1))
-            {
-                normalCam.SetActive(true);
-                aimingCam.SetActive(false);
+                playerObject.forward = Vector3.Slerp(playerObject.forward, inputDirection.normalized, Time.deltaTime * rotationSpeed);
+                player.forward = Vector3.Slerp(player.forward, inputDirection.normalized, Time.deltaTime * rotationSpeed);
             }
         }
     }

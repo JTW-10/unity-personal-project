@@ -9,6 +9,7 @@ public class EnemyDetection : MonoBehaviour
 {
     public PlayerController player;
     public Transform Player;
+    public GameObject enemy;
     public bool isAggro = false;
     public bool playerNear = false;
     public bool swarmingMode = false;
@@ -20,6 +21,7 @@ public class EnemyDetection : MonoBehaviour
     void Start()
     {
         player = GameObject.Find("Player").GetComponent<PlayerController>();
+        Player = player.transform;
     }
 
     // Update is called once per frame

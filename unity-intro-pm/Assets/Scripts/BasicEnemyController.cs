@@ -9,7 +9,7 @@ public class BasicEnemyController : MonoBehaviour
     public PlayerController player;
     public EnemyDetection enemyDetection;
     public NavMeshAgent agent;
-    public Rigidbody rb;
+    public GameManager gm;
 
     [Header("Basic Enemy Settings")]
     public float health = 100;
@@ -17,6 +17,8 @@ public class BasicEnemyController : MonoBehaviour
     public float damageGiven = 10;
     public float stunWindow = 1;
     public bool isStunned = false;
+    public bool isAlive = true;
+    public bool canHit = true;
 
     [Header("Knockback Settings")]
     public bool placeholder = false;
@@ -25,29 +27,35 @@ public class BasicEnemyController : MonoBehaviour
     void Start()
     {
         player = GameObject.Find("Player").GetComponent<PlayerController>();
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         agent = GetComponent<NavMeshAgent>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.K))
+        if (!gm.isPaused)
         {
-            enemyDetection.swarmingMode = true;
+            if (gm.debugKeys)
+            {
+                if (Input.GetKeyDown(KeyCode.K))
+                {
+                    enemyDetection.swarmingMode = true;
+                }
+            }
         }
-
 
         if (health <= 0)
         {
-            Destroy(gameObject);
+            Die();
         }
 
-        if (enemyDetection.isAggro)
+        if (enemyDetection.isAggro && isAlive && !isStunned)
         {
             agent.destination = player.transform.position;
         }
 
-        if (enemyDetection.swarmingMode)
+        if (enemyDetection.swarmingMode && isAlive && !isStunned)
         {
             enemyDetection.detectRadius = 9999;
             enemyDetection.isAggro = true;
@@ -72,32 +80,72 @@ public class BasicEnemyController : MonoBehaviour
 
         if (other.gameObject.tag == "Swing")
         {
-            Vector3 knockbackDirection = other.transform.position - transform.position;
-            knockbackDirection.y = 0;
-
             if (player.comboCounter > 2)
             {
-                health -= player.meleeDamage;
-                Debug.Log("final attack");
-                enemyDetection.swarmingMode = true;
-                player.knockbackForce = player.knockbackForce * 0.5f;
-                rb.AddForce(knockbackDirection.normalized * player.knockbackForce, ForceMode.Impulse);
-                StartCoroutine("knockbackReset");
+                hardHit();
             }
             else
             {
-                health -= player.meleeDamage;
-                Debug.Log("regular attack");
-                enemyDetection.swarmingMode = true;
-                rb.AddForce(knockbackDirection.normalized * player.knockbackForce, ForceMode.Impulse);
+                softHit();
             }
         }
+    }
+
+    void Die()
+    {
+        Destroy(gameObject);
+        isAlive = false;
+    }
+
+    void hardHit()
+    {
+        Vector3 knockbackDirection = player.transform.position - transform.position;
+        health -= player.meleeDamage;
+        Debug.Log("final attack");
+        enemyDetection.swarmingMode = true;
+        canHit = false;
+        isStunned = true;
+        transform.position += Vector3.forward * 0.1f;
+        StartCoroutine("HardStunReset");
+        StartCoroutine("iframes");
+    }
+
+    void softHit()
+    {
+        Vector3 knockbackDirection = player.transform.position - transform.position;
+        knockbackDirection.y = 0;
+        health -= player.meleeDamage;
+        Debug.Log("regular attack");
+        enemyDetection.swarmingMode = true;
+        canHit = false;
+        isStunned = true;
+        transform.position += player.transform.position * 0.1f;
+        StartCoroutine("StunReset");
+        StartCoroutine("iframes");
     }
 
     IEnumerator knockbackReset()
     {
         yield return new WaitForSeconds(0.25f);
         player.knockbackForce = player.knockbackForce / 0.5f;
+    }
+
+    IEnumerator iframes()
+    {
+        yield return new WaitForSeconds(0.1f);
+        canHit = true;
+    }
+
+    IEnumerator StunReset()
+    {
+        yield return new WaitForSeconds(player.stunDuration);
+        isStunned = false;
+    }    
+
+    IEnumerator HardStunReset()
+    {
+        yield return new WaitForSeconds(player.stunDuration);
+        isStunned = false;
     }
 }
 

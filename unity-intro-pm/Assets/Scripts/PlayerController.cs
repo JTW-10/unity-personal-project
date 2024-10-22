@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     public BasicEnemyController basicEnemy;
     public PlayerMovement playerMove;
     public EnemyDetection enemyAI;
+    public bool isAlive = true;
 
     // Player and camera values
 
@@ -104,6 +105,7 @@ public class PlayerController : MonoBehaviour
                 {
                     swingHitbox.SetActive(true);
                     canSwing = false;
+                    playerMove.speed = 0f;
                     StartCoroutine("cooldownSwing");
                     comboCounter++;
                     StartCoroutine("comboEnd");
@@ -114,6 +116,7 @@ public class PlayerController : MonoBehaviour
                     StopCoroutine("comboEnd");
                     swingHitbox.SetActive(true);
                     canSwing = false;
+                    playerMove.speed = 0f;
                     StartCoroutine("cooldownSwing");
                     comboCounter++;
                     StartCoroutine("comboEnd");
@@ -180,16 +183,6 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine("parryingWindow");
                 StartCoroutine("cooldownParry");
                 // make sure to have parry animation, preferably with a deflecting animation if you land the parry
-            }
-
-            // Temporary Debug Keys
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                Time.timeScale = 0.5f;
-            }
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                Time.timeScale = 1f;
             }
         }
     }
@@ -391,6 +384,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(swingSpeed);
         swingHitbox.SetActive(false);
         canSwing = true;
+        playerMove.speed = 10;
     }
     
     IEnumerator cooldownThirdSwing()
