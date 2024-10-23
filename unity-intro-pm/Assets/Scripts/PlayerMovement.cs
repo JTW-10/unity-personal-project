@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 10;
     public float jumpHeight = 5;
     public float airMultiplier;
+    public bool canJump = true;
     public bool isGrounded = true;
 
     // Start is called before the first frame update
@@ -51,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 isGrounded = false;
             }
-
+            
             if (isGrounded)
             {
                 myRB.AddForce(moveDirection.normalized * speed * 10f, ForceMode.Force);
@@ -60,13 +61,13 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                myRB.AddForce(moveDirection.normalized * speed * 5f * airMultiplier, ForceMode.Force);
-                myRB.drag = 0f;
+                    myRB.AddForce(moveDirection.normalized * speed * 5f * airMultiplier, ForceMode.Force);
+                    myRB.drag = 0f;
             }
 
             SpeedCap();
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && canJump)
             {
                 if (isGrounded || doubleJump < 1)
                 {

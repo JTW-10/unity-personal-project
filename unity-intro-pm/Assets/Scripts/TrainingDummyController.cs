@@ -9,6 +9,7 @@ using UnityEngine.AI;
 public class TrainingDummyController : MonoBehaviour
 {
     Rigidbody myRB;
+    public GameObject swingHitbox;
     public PlayerController player;
     
 
@@ -17,12 +18,14 @@ public class TrainingDummyController : MonoBehaviour
     public float maxHealth = 100;
     public float stunWindow = 1;
     public float knockback = 10;
+    public float groundDrag = 7;
     public bool isStunned = false;
 
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.Find("Player").GetComponent<PlayerController>();
+        myRB = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -36,25 +39,11 @@ public class TrainingDummyController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Vector3 knockbackDirection = transform.position - player.transform.position.normalized;
-
-        if (other.gameObject.tag == "Shot")
-        {
-            Destroy(other.gameObject);
-            health -= player.weaponDamage;
-            Debug.Log("enemy has taken blaster damage");
-        }
-
         if (other.gameObject.tag == "Swing")
         {
-            if (player.comboCounter > 2)
-            {
-                Debug.Log("final attack");
-            }
-            else
-            { 
-                Debug.Log("regular attack");
-            }
+            Vector3 knockbackDirection = transform.position - swingHitbox.transform.position;
+            myRB.AddForce(knockbackDirection * player.knockbackForce);
+            myRB.drag = groundDrag;
         }
     }
 

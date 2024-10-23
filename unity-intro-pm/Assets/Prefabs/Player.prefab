@@ -72,6 +72,7 @@ Transform:
   - {fileID: 4804719465454650661}
   - {fileID: 3133234572546009369}
   - {fileID: 4102366793101307123}
+  - {fileID: 2497327440371579546}
   - {fileID: 8589884300637411300}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -144,6 +145,7 @@ MonoBehaviour:
   basicEnemy: {fileID: 0}
   playerMove: {fileID: 6131032478111308829}
   enemyAI: {fileID: 0}
+  isAlive: 1
   canDodge: 1
   isDodging: 0
   dodgeCooldown: 3
@@ -379,6 +381,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1891861250807706738}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2618966972070988179
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2497327440371579546}
+  m_Layer: 0
+  m_Name: KnockBackReference
+  m_TagString: Swing
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2497327440371579546
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2618966972070988179}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000062584905, y: -0.0000000031004677, z: 8.003554e-11, w: 1}
+  m_LocalPosition: {x: -0.008, y: 0.085, z: 1.427}
+  m_LocalScale: {x: 0.21334, y: 0.3113484, z: 0.39381042}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3119577523819630503}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3807711192388243813
 GameObject:
   m_ObjectHideFlags: 0

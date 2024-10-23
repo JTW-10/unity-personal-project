@@ -12,6 +12,7 @@ public class CheatCodes : MonoBehaviour
     public Transform player;
     public GameObject thebeast;
     public GameObject beastText;
+    public GameObject beastWall;
     public bool thebeasthungers = false;
     // Start is called before the first frame update
     void Start()
@@ -33,6 +34,7 @@ public class CheatCodes : MonoBehaviour
                         thebeasthungers = true;
                         thebeast.gameObject.SetActive(true);
                         beastText.gameObject.SetActive(true);
+                        //beastWall.GetComponent<Renderer>().material = ("tgb_side");
                     }
                     else
                     {

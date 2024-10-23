@@ -105,6 +105,7 @@ public class PlayerController : MonoBehaviour
                 {
                     swingHitbox.SetActive(true);
                     canSwing = false;
+                    playerMove.canJump = false;
                     playerMove.speed = 0f;
                     StartCoroutine("cooldownSwing");
                     comboCounter++;
@@ -116,6 +117,7 @@ public class PlayerController : MonoBehaviour
                     StopCoroutine("comboEnd");
                     swingHitbox.SetActive(true);
                     canSwing = false;
+                    playerMove.canJump = false;
                     playerMove.speed = 0f;
                     StartCoroutine("cooldownSwing");
                     comboCounter++;
@@ -126,8 +128,23 @@ public class PlayerController : MonoBehaviour
                 {
                     StopCoroutine("comboEnd");
                     swingHitbox.SetActive(true);
+                    playerMove.speed = 0f;
                     comboCounter++;
                     canSwing = false;
+                    playerMove.canJump = false;
+                    StartCoroutine("cooldownThirdSwing");
+                }
+
+                else if(comboCounter >= 2 && Input.GetKey(KeyCode.Space)) //upward attack on third swing, figure out why this doesn't work or just scrap it
+                {
+                    StopCoroutine("ComboEnd"); // also remember to actually add the ability to die
+                    swingHitbox.SetActive(true);
+                    playerMove.speed = 0f;
+                    comboCounter++;
+                    myRB.AddForce(transform.up * 1000);
+                    Debug.Log("jumpAttack");
+                    canSwing = false;
+                    playerMove.canJump = false;
                     StartCoroutine("cooldownThirdSwing");
                 }
             }
@@ -295,7 +312,7 @@ public class PlayerController : MonoBehaviour
                     stunDuration = 0.5f;
                     comboWindow = 0.75f;
                     comboCounter = 0;
-                    knockbackForce = 2f;
+                    knockbackForce = 250f;
                     break;
 
 
@@ -384,6 +401,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(swingSpeed);
         swingHitbox.SetActive(false);
         canSwing = true;
+        //playerMove.canJump = true;
         playerMove.speed = 10;
     }
     
@@ -392,6 +410,8 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(swingSpeed + 0.3f);
         swingHitbox.SetActive(false);
         canSwing = true;
+        //playerMove.canJump = true;
+        playerMove.speed = 10f;
         comboCounter = 0;
     }
 
@@ -399,5 +419,6 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(comboWindow);
         comboCounter = 0;
+        playerMove.canJump = true;
     }
 }
