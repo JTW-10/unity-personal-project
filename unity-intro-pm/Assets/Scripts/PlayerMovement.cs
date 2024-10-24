@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     GameManager gm;
+    PlayerController playerData;
 
     public Transform player;
     public Transform playerObject;
@@ -28,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+        playerData = GameObject.Find("Player").GetComponent<PlayerController>();
         myRB = GetComponent<Rigidbody>();
         myRB.freezeRotation = true;
     }
@@ -35,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!gm.isPaused) // figure out why this is not working despite it literally being copied from playercontroller
+        if(!gm.isPaused && playerData.isAlive) // figure out why this is not working despite it literally being copied from playercontroller
         {
             float verticalMove = Input.GetAxisRaw("Vertical");
             float horizontalMove = Input.GetAxisRaw("Horizontal");

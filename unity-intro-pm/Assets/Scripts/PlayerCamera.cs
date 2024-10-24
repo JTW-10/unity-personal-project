@@ -10,6 +10,7 @@ public class PlayerCamera : MonoBehaviour
     public Transform playerObject;
     public Transform lookDirection;
     public Transform aimingLookAt;
+    public PlayerController playerData;
     public Rigidbody myRB;
                                     // main issue at the moment is that the player object is not looking in same direction as aiming camera and functions more like the normal cam
     public float rotationSpeed;
@@ -24,6 +25,9 @@ public class PlayerCamera : MonoBehaviour
     void Start()
     {
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+        playerData = GameObject.Find("Player").GetComponent<PlayerController>();
+        lookDirection = player.transform.Find("LookDirection");
+        playerObject = player.transform.Find("PlayerObject");
     }
 
     // Update is called once per frame

@@ -10,6 +10,7 @@ public class CheatCodes : MonoBehaviour
     public EnemyDetection enemyDetection;
     public GameManager gm;
     public Transform player;
+    public PlayerController playerData;
     public GameObject thebeast;
     public GameObject beastText;
     public GameObject beastWall;
@@ -17,7 +18,8 @@ public class CheatCodes : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        playerData = GameObject.Find("Player").GetComponent<PlayerController>();
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -34,7 +36,6 @@ public class CheatCodes : MonoBehaviour
                         thebeasthungers = true;
                         thebeast.gameObject.SetActive(true);
                         beastText.gameObject.SetActive(true);
-                        //beastWall.GetComponent<Renderer>().material = ("tgb_side");
                     }
                     else
                     {
@@ -51,6 +52,11 @@ public class CheatCodes : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.P))
                 {
                     Time.timeScale = 1f;
+                }
+
+                if(Input.GetKeyDown(KeyCode.U))
+                {
+                    playerData.playerHealth = 0;
                 }
             }
         }

@@ -10,12 +10,13 @@ public class BasicEnemyController : MonoBehaviour
     public EnemyDetection enemyDetection;
     public NavMeshAgent agent;
     public GameManager gm;
-    public GameObject knockbackReference;
+    public Transform knockbackReference;
     public PlayerMovement playerMovement;
+    public Rigidbody playerRB;
     public Rigidbody rb;
 
     [Header("Basic Enemy Settings")]
-    public float health = 100;
+    public float health = 375;
     public float maxHealth = 100;
     public float damageGiven = 10;
     public float stunWindow = 1;
@@ -34,7 +35,8 @@ public class BasicEnemyController : MonoBehaviour
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         agent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
-        knockbackReference = GameObject.Find("Player/KnockBackReference");
+        playerRB = GameObject.Find("Player").GetComponent<Rigidbody>();
+        knockbackReference = player.transform.Find("KnockbackReference");
         playerMovement = GetComponent<PlayerMovement>();
     }
 
@@ -107,6 +109,19 @@ public class BasicEnemyController : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            Vector3 knockbackDirection = transform.position - knockbackReference.transform.position;
+            rb.AddForce(knockbackDirection * player.knockbackForce);
+            rb.drag = groundDrag;
+            isStunned = true;
+            StartCoroutine("HardStunReset");
+            playerRB.AddForce(-knockbackDirection * 100);
+        }
+    }
+
     void Die()
     {
         Destroy(gameObject);
@@ -116,9 +131,8 @@ public class BasicEnemyController : MonoBehaviour
     void hardHit()
     {
         Vector3 knockbackDirection = transform.position - knockbackReference.transform.position;
-        player.knockbackForce += 50;
         rb.AddForce(knockbackDirection * player.knockbackForce);
-        rb.AddForce(Vector3.up * player.knockbackForce / 3);
+        rb.AddForce(Vector3.up * player.knockbackForce);
         rb.drag = groundDrag;
         player.stunDuration += 0.3f;
         health -= player.meleeDamage;
@@ -128,12 +142,12 @@ public class BasicEnemyController : MonoBehaviour
         isStunned = true;
         StartCoroutine("HardStunReset");
         StartCoroutine("iframes");
-        StartCoroutine("hardknockbackReset");
     }
 
     void softHit()
     {
         Vector3 knockbackDirection = transform.position - knockbackReference.transform.position;
+        player.knockbackForce -= 50;
         rb.AddForce(knockbackDirection * player.knockbackForce);
         rb.drag = groundDrag;
         health -= player.meleeDamage;
@@ -147,7 +161,7 @@ public class BasicEnemyController : MonoBehaviour
 
     IEnumerator iframes()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(player.swingSpeed);
         canHit = true;
     }
 
@@ -164,10 +178,10 @@ public class BasicEnemyController : MonoBehaviour
         isStunned = false;
     }
 
-    IEnumerator hardknockbackReset()
+    IEnumerator knockbackReset()
     {
         yield return new WaitForSeconds(player.swingSpeed);
-        player.knockbackForce -= 50;
+        player.knockbackForce += 50;
     }
 }
 

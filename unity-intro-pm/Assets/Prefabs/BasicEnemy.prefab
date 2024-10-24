@@ -238,10 +238,14 @@ MonoBehaviour:
   enemyDetection: {fileID: 7261936363373208991}
   agent: {fileID: 4952284128792973014}
   gm: {fileID: 0}
-  health: 100
-  maxHealth: 100
+  knockbackReference: {fileID: 0}
+  playerMovement: {fileID: 0}
+  rb: {fileID: 0}
+  health: 375
+  maxHealth: 375
   damageGiven: 10
   stunWindow: 1
+  groundDrag: 2
   isStunned: 0
   isAlive: 1
   canHit: 1

@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour
     public GameObject mainHUD;
     public GameObject baseMainMenu;
     public GameObject optionsMenu;
+    public GameObject gameoverMenu;
+    public GameObject playermodel;
+    public GameObject gameoverPlayerModel;
     public PlayerController playerData;
     public CheatCodes cheatData;
 
@@ -28,6 +31,13 @@ public class GameManager : MonoBehaviour
         if (SceneManager.GetActiveScene().buildIndex > 0)
         {
             playerData = GameObject.Find("Player").GetComponent<PlayerController>();
+            playermodel = GameObject.Find("Player/PlayerObject");
+            gameoverPlayerModel = GameObject.Find("Player/PlayerObjectFallen");
+        }
+
+        if (gameoverPlayerModel != null)
+        {
+            gameoverPlayerModel.SetActive(false);
         }
     }
 
@@ -83,6 +93,16 @@ public class GameManager : MonoBehaviour
 
                 else
                     Resume();
+            }
+
+            if(playerData.playerHealth == 0)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                Time.timeScale = 0f;
+                gameoverMenu.gameObject.SetActive(true);
+                playermodel.gameObject.SetActive(false);
+                gameoverPlayerModel.gameObject.SetActive(true);
             }
         }
 

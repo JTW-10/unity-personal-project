@@ -96,7 +96,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!gm.isPaused)
+        if(!gm.isPaused && isAlive)
         {
             //swinging code
             if (Input.GetMouseButtonDown(0) && meleeID >= 0 && !isAimed && canSwing)
