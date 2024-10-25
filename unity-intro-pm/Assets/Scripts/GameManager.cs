@@ -204,11 +204,12 @@ public class GameManager : MonoBehaviour
     public void ObjectiveNotMet()
     {
         objectiveText.gameObject.SetActive(true);
+        StartCoroutine("ObjectiveTextTimer");
     }
 
     IEnumerator ObjectiveTextTimer()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(5);
         objectiveText.gameObject.SetActive(false);
     }
 }
