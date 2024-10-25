@@ -11,6 +11,8 @@ TagManager:
   - Shot
   - enemy
   - Swing
+  - Door
+  - Pointy
   layers:
   - Default
   - TransparentFX

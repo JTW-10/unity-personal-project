@@ -118,7 +118,7 @@ public class BasicEnemyController : MonoBehaviour
             rb.drag = groundDrag;
             isStunned = true;
             StartCoroutine("HardStunReset");
-            playerRB.AddForce(-knockbackDirection * 100);
+            //playerRB.AddForce(-knockbackDirection * 100);
         }
     }
 
@@ -126,6 +126,7 @@ public class BasicEnemyController : MonoBehaviour
     {
         Destroy(gameObject);
         isAlive = false;
+        player.enemiesKilled++;
     }
 
     void hardHit()

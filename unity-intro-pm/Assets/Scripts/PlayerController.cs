@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour
     public float pickupHealth = 25f;
     public float hitCooldown = 2f;
     public float armorCooldown = 10f;
+    public float enemiesKilled = 0;
     public bool canHit = true;
     public bool canParry = true;
     public bool playerArmor = true;
@@ -201,6 +202,17 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine("cooldownParry");
                 // make sure to have parry animation, preferably with a deflecting animation if you land the parry
             }
+
+            if (transform.position.y > 12)
+            {
+                transform.position += Vector3.down * 10f;
+                myRB.velocity = Vector3.zero;
+            }
+            if (transform.position.y < -20)
+            {
+                transform.position += Vector3.up * 20f;
+                myRB.velocity = Vector3.zero;
+            }
         }
     }
 
@@ -219,6 +231,58 @@ public class PlayerController : MonoBehaviour
             if (!playerArmor && canHit)
             {
                 playerHealth -= basicEnemy.damageGiven;
+                canHit = false;
+                StartCoroutine("cooldownHit");
+                Debug.Log("health is hit and armor is reset i hope");
+            }
+
+            if (isDodging)
+            {
+                Debug.Log("dodge worked");
+                playerArmor = true; // remember that this is going to be the main way to get armor back in the future
+                Time.timeScale = 0.3f;
+                StartCoroutine("hitStop");
+                StartCoroutine("cooldownHit");
+            }
+
+            if (isParrying)
+            {
+                Debug.Log("attack parried"); // deflection animation will go here
+                playerArmor = true;
+                playerHealth += 10;
+                basicEnemy.isStunned = true;
+                Time.timeScale = 0.3f;
+                StartCoroutine("hitStop");
+                StartCoroutine("parryingWindow");
+                StartCoroutine("stunEnd");
+            }
+        }
+
+        if (collision.gameObject.tag == "Door")
+        {
+            if(enemiesKilled == 4)
+            {
+                gm.GoToNextLevel();
+            }
+            else
+            {
+                gm.ObjectiveNotMet();
+            }
+        }
+
+        if (collision.gameObject.tag == "Pointy")
+        {
+            if (playerArmor && canHit)
+            {
+                playerArmor = false;
+                canHit = false;
+                StartCoroutine("cooldownHit");
+                Debug.Log("armor is hit");
+            }
+
+            if (!playerArmor && canHit)
+            {
+                playerHealth -= 50;
                 canHit = false;
                 StartCoroutine("cooldownHit");
                 Debug.Log("health is hit and armor is reset i hope");
@@ -387,7 +451,6 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(stunDuration);
         basicEnemy.isStunned = false;
-        basicEnemy.agent.isStopped = false;
     }
 
     IEnumerator hitStop()

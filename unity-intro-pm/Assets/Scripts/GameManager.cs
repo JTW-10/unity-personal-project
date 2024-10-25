@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public GameObject gameoverMenu;
     public GameObject playermodel;
     public GameObject gameoverPlayerModel;
+    public GameObject objectiveText;
     public PlayerController playerData;
     public CheatCodes cheatData;
 
@@ -24,6 +25,7 @@ public class GameManager : MonoBehaviour
     public Image armorIcon;
     public TextMeshProUGUI comboCounter;
     public TextMeshProUGUI ammoCounter;
+    public TextMeshProUGUI enemyCounter;
 
     // Start is called before the first frame update
     void Start()
@@ -33,11 +35,16 @@ public class GameManager : MonoBehaviour
             playerData = GameObject.Find("Player").GetComponent<PlayerController>();
             playermodel = GameObject.Find("Player/PlayerObject");
             gameoverPlayerModel = GameObject.Find("Player/PlayerObjectFallen");
+            objectiveText = GameObject.Find("objectiveText");
         }
 
         if (gameoverPlayerModel != null)
         {
             gameoverPlayerModel.SetActive(false);
+        }
+        if (objectiveText != null)
+        {
+            objectiveText.SetActive(false);
         }
     }
 
@@ -47,6 +54,12 @@ public class GameManager : MonoBehaviour
         if (SceneManager.GetActiveScene().buildIndex > 0)
         {
             healthBar.fillAmount = Mathf.Clamp(playerData.playerHealth / playerData.playerMaxHealth, 0, 1);
+
+            if (SceneManager.GetActiveScene().buildIndex == 1)
+            {
+                enemyCounter.gameObject.SetActive(true);
+                enemyCounter.text = "Enemies Killed (You need 4 to go to next level): " + playerData.enemiesKilled;
+            }
 
             if (playerData.blasterID < 0)
             {
@@ -181,5 +194,21 @@ public class GameManager : MonoBehaviour
         {
             debugKeys = false;
         }
+    }
+
+    public void GoToNextLevel()
+    {
+        SceneManager.LoadScene(2);
+    }
+
+    public void ObjectiveNotMet()
+    {
+        objectiveText.gameObject.SetActive(true);
+    }
+
+    IEnumerator ObjectiveTextTimer()
+    {
+        yield return new WaitForSeconds(3);
+        objectiveText.gameObject.SetActive(false);
     }
 }
